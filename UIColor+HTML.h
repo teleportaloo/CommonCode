@@ -27,6 +27,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (UIColor *)colorWithHTMLColor:(long)col;
 
+/// Returns the HTML hex string representation of the color (e.g., "#FF5733").
+- (NSString *)hexString;
+
+/// Creates and returns a UIColor from an HTML hex string (e.g., "#FF5733" or
+/// "FF5733"). Returns nil if the string is not valid.
++ (nullable UIColor *)colorWithHexString:(NSString *)hexString;
+
 @end
 
 NS_ASSUME_NONNULL_END
