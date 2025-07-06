@@ -6,7 +6,7 @@
 //  Copyright © 2015 Andrew Wallace
 //
 
-// Copyright 2025 Andrew Wallace
+// Copyright 2015 Andrew Wallace
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,6 +64,7 @@
 // #D - dark mode aware text (black or white)
 // #! - dark mode aware system-wide alert color (yellow or black)
 // #U - dark mode aware blue.
+// #E - accent color
 // #0 - black
 // #O - orange
 // #G - green

@@ -6,7 +6,7 @@
 //  Copyright © 2015 Andrew Wallace
 //
 
-// Copyright 2025 Andrew Wallace
+// Copyright 2015 Andrew Wallace
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#define DEBUG_LEVEL_FOR_FILE kLogUserInterface
+#define DEBUG_LEVEL_FOR_FILE LogMarkup
 
 #import "DebugLogging.h"
 #import "NSString+Markup.h"
@@ -528,6 +528,9 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                     break;
                 case 'U':
                     currentColor = [UIColor modeAwareBlue];
+                    break;
+                case 'E':
+                    currentColor = [UIColor colorNamed:@"AccentColor"];
                     break;
                 case '>': {
                     currentIndent += indent;
