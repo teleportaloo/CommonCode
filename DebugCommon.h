@@ -19,7 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#import <Foundation/Foundation.h>
+
 
 #ifndef DebugCommon_h
 #define DebugCommon_h
@@ -28,6 +28,8 @@
 
 #if defined __cplusplus
 extern "C" {
+#else
+#import <Foundation/Foundation.h>
 #endif
 
 extern long DebugLogLevel(void);
@@ -71,6 +73,7 @@ extern void DebugAssert(void);
 #define ASSERT(X)
 #define DEBUG_MODE @""
 
+
 #endif
 
 #define DEBUG_HERE() DEBUG_LOG(@"here")
@@ -108,5 +111,6 @@ extern void DebugAssert(void);
     }
 
 #define DEBUG_LOG_description(X) DEBUG_LOG(@"%-40s %@", #X, (X).description)
+
 
 #endif /* DebugLogging_h */

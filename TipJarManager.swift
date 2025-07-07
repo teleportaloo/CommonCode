@@ -65,7 +65,7 @@ import StoreKit
                     return (true, true)
                 }
             case .userCancelled:
-                DEBUG_LOG(.LogUI, "User cancelled purchase")
+                DEBUG_LOG(.LogTipJar, "User cancelled purchase")
                 return (false, true)
             default:
                 return (false, false)
