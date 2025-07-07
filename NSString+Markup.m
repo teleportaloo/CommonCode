@@ -25,6 +25,7 @@
 #import "DebugLogging.h"
 #import "NSString+Markup.h"
 #import "UIColor+HTML.h"
+#import "NSString+Convenience.h"
 
 #define IOS_DARK_MODE                                                          \
     ([UIScreen mainScreen].traitCollection.userInterfaceStyle ==               \
@@ -61,124 +62,9 @@ static NSString *newl = @"\n";
 
 @end
 
-@implementation NSString (Helper)
+@implementation NSString (Markup)
 
-- (unichar)firstUnichar {
-    if (self.length > 0) {
-        // This used to be called firstCharacter but when that is called it
-        // fails after creating a UIDocumentInteractionController.  Super weird.
-        return [self characterAtIndex:0];
-    }
 
-    return 0;
-}
-
-- (unichar)lastUnichar {
-    if (self.length > 0) {
-        // This used to be called firstCharacter but when that is called it
-        // fails after creating a UIDocumentInteractionController.  Super weird.
-        return [self characterAtIndex:self.length - 1];
-    }
-
-    return 0;
-}
-
-- (NSMutableAttributedString *)mutableAttributedString {
-    return [[NSMutableAttributedString alloc] initWithString:self];
-}
-
-- (NSString *)stringByTrimmingWhitespace {
-    return [self
-        stringByTrimmingCharactersInSet:[NSCharacterSet
-                                            whitespaceAndNewlineCharacterSet]];
-}
-
-- (NSString *)stringWithTrailingSpaceIfNeeded {
-    if (self.length == 0) {
-        return self;
-    }
-
-    return [self stringByAppendingString:@" "];
-}
-
-+ (NSMutableString *)textSeparatedStringFromEnumerator:
-                         (id<NSFastEnumeration>)container
-                                              selector:(SEL)selector
-                                             separator:(NSString *)separator {
-    NSMutableString *string = [NSMutableString string];
-
-    static Class stringClass;
-
-    static dispatch_once_t onceToken;
-
-    dispatch_once(&onceToken, ^{
-      stringClass = [NSString class];
-    });
-
-    for (NSObject *obj in container) {
-        if ([obj respondsToSelector:selector]) {
-            IMP imp = [obj methodForSelector:selector];
-            NSObject *(*func)(id, SEL) = (void *)imp;
-
-            NSObject *item = func(obj, selector);
-
-            // NSObject *item = [obj performSelector:selector];
-            if (item != nil) {
-                if ([item isKindOfClass:stringClass]) {
-                    if (string.length > 0) {
-                        [string appendString:separator];
-                    }
-
-                    [string appendString:(NSString *)item];
-                } else {
-                    ERROR_LOG(@"commaSeparatedStringFromEnumerator - selector "
-                              @"did not return string %@\n",
-                              NSStringFromSelector(selector));
-                }
-            }
-        } else {
-            ERROR_LOG(@"commaSeparatedStringFromEnumerator - item does not "
-                      @"respond to selector %@\n",
-                      NSStringFromSelector(selector));
-        }
-    }
-
-    return string;
-}
-
-+ (NSMutableString *)commaSeparatedStringFromStringEnumerator:
-    (id<NSFastEnumeration>)container;
-{
-    return [NSString textSeparatedStringFromEnumerator:container
-                                              selector:@selector(self)
-                                             separator:@","];
-}
-
-+ (NSMutableString *)commaSeparatedStringFromEnumerator:
-                         (id<NSFastEnumeration>)container
-                                               selector:(SEL)selector;
-{
-    return [NSString textSeparatedStringFromEnumerator:container
-                                              selector:selector
-                                             separator:@","];
-}
-
-- (NSMutableArray<NSString *> *)mutableArrayFromCommaSeparatedString {
-    NSCharacterSet *comma =
-        [NSCharacterSet characterSetWithCharactersInString:@","];
-    NSMutableArray<NSString *> *array = [NSMutableArray array];
-    NSScanner *scanner = [NSScanner scannerWithString:self];
-    NSString *item;
-
-    while ([scanner scanUpToCharactersFromSet:comma intoString:&item]) {
-        [array addObject:item];
-
-        if (!scanner.atEnd) {
-            scanner.scanLocation++;
-        }
-    }
-    return array;
-}
 
 - (UIFont *)updateFont:(UIFont *)font
              pointSize:(CGFloat)pointSize
@@ -295,16 +181,6 @@ static NSString *newl = @"\n";
         }
     }
     return style;
-}
-
-- (NSString *)percentEncodeUrl {
-    return [self stringByAddingPercentEncodingWithAllowedCharacters:
-                     NSCharacterSet.URLPathAllowedCharacterSet];
-}
-
-- (NSString *)fullyPercentEncodeString {
-    return [self stringByAddingPercentEncodingWithAllowedCharacters:
-                     NSCharacterSet.alphanumericCharacterSet];
 }
 
 - (NSString *)safeEscapeForMarkUp {
@@ -629,48 +505,7 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
     return [self attributedStringFromMarkUpWithFont:nil].string;
 }
 
-- (bool)hasCaseInsensitiveSubstring:(NSString *)search {
-    return
-        [self rangeOfString:search options:NSCaseInsensitiveSearch].location !=
-        NSNotFound;
-}
 
-- (NSString *)justNumbers {
-    NSMutableString *res = [NSMutableString string];
-
-    int i = 0;
-    unichar c;
-
-    for (i = 0; i < self.length; i++) {
-        c = [self characterAtIndex:i];
-
-        if (isnumber(c)) {
-            [res appendFormat:@"%C", c];
-        }
-    }
-    return res;
-}
-
-- (NSAttributedString *)attributedString {
-    return [[NSAttributedString alloc] initWithString:self];
-}
-
-- (NSAttributedString *)attributedStringWithAttributes:
-    (nullable NSDictionary<NSAttributedStringKey, id> *)attrs {
-    return [[NSAttributedString alloc] initWithString:self attributes:attrs];
-}
-
-- (NSString *)removeSingleLineBreaks {
-    // Replace single line breaks
-    NSRegularExpression *regex =
-        [NSRegularExpression regularExpressionWithPattern:@"(?<!\n)\n(?!\n)"
-                                                  options:0
-                                                    error:NULL];
-    return [regex stringByReplacingMatchesInString:self
-                                           options:0
-                                             range:NSMakeRange(0, self.length)
-                                      withTemplate:@" "];
-}
 
 - (NSString *)markDownToMarkUp {
     NSScanner *newlineScanner = [NSScanner scannerWithString:self];

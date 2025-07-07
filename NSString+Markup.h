@@ -95,42 +95,5 @@
 // regular.
 - (NSString *_Nonnull)markDownToMarkUp;
 
-// General helper functions
-
-- (NSString *_Nonnull)removeSingleLineBreaks;
-- (NSMutableAttributedString *_Nonnull)mutableAttributedString;
-- (NSAttributedString *_Nonnull)attributedString;
-- (NSString *_Nonnull)stringWithTrailingSpaceIfNeeded;
-- (NSString *_Nonnull)stringByTrimmingWhitespace;
-- (unichar)firstUnichar;
-- (unichar)lastUnichar;
-
-// URL encoding helpers
-- (NSString *_Nonnull)percentEncodeUrl;
-- (NSString *_Nonnull)fullyPercentEncodeString;
-
-// Search helpers
-- (bool)hasCaseInsensitiveSubstring:(NSString *_Nonnull)search;
-
-// UI helpers
-- (NSString *_Nonnull)justNumbers;
-
-// Breaking down into arrays and back
-
-- (NSMutableArray<NSString *> *_Nonnull)mutableArrayFromCommaSeparatedString;
-+ (NSMutableString *_Nonnull)commaSeparatedStringFromStringEnumerator:
-    (id<NSFastEnumeration> _Nonnull)container;
-
-+ (NSMutableString *_Nonnull)
-    commaSeparatedStringFromEnumerator:(id<NSFastEnumeration> _Nonnull)container
-                              selector:(SEL _Nonnull)selector;
-
-+ (NSMutableString *_Nonnull)
-    textSeparatedStringFromEnumerator:(id<NSFastEnumeration> _Nonnull)container
-                             selector:(SEL _Nonnull)selector
-                            separator:(NSString *_Nonnull)separator;
-
-- (NSAttributedString *_Nonnull)attributedStringWithAttributes:
-    (nullable NSDictionary<NSAttributedStringKey, id> *)attrs;
 
 @end
