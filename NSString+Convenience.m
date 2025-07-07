@@ -22,6 +22,7 @@
 
 #import "NSString+Convenience.h"
 #import "DebugLogging.h"
+#import "TaskDispatch.h"
 
 #define DEBUG_LEVEL_FOR_FILE LogMarkup
 
@@ -73,10 +74,8 @@
 
     static Class stringClass;
 
-    static dispatch_once_t onceToken;
-
-    dispatch_once(&onceToken, ^{
-      stringClass = [NSString class];
+    DoOnce(^{
+        stringClass = [NSString class];
     });
 
     for (NSObject *obj in container) {
