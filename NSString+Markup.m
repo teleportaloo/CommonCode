@@ -23,48 +23,16 @@
 #define DEBUG_LEVEL_FOR_FILE LogMarkup
 
 #import "DebugLogging.h"
-#import "NSString+Markup.h"
-#import "UIColor+HTML.h"
 #import "NSString+Convenience.h"
-
-#define IOS_DARK_MODE                                                          \
-    ([UIScreen mainScreen].traitCollection.userInterfaceStyle ==               \
-     UIUserInterfaceStyleDark)
+#import "NSString+Markup.h"
+#import "UIColor+DarkMode.h"
+#import "UIColor+HTML.h"
+#import <TargetConditionals.h>
 
 static NSString *markupEscape = @"#";
 static NSString *newl = @"\n";
 
-@interface UIColor (DarkMode)
-
-+ (UIColor *)modeAwareText;
-+ (UIColor *)modeAwareBlue;
-
-@end
-
-@implementation UIColor (DarkMode)
-
-+ (UIColor *)modeAwareText {
-    if (@available(iOS 13.0, *)) {
-        return [UIColor labelColor];
-    }
-    return [UIColor blackColor];
-}
-
-+ (UIColor *)modeAwareBlue {
-    if (@available(iOS 13.0, *)) {
-        if (IOS_DARK_MODE) {
-            // These colors are based in the "information icon" (i) color
-            return [UIColor colorWithHTMLColor:0x0099FF];
-        }
-    }
-    return [UIColor colorWithHTMLColor:0x0066FF];
-}
-
-@end
-
 @implementation NSString (Markup)
-
-
 
 - (UIFont *)updateFont:(UIFont *)font
              pointSize:(CGFloat)pointSize
@@ -365,6 +333,10 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                 case 'A':
                     currentColor = [UIColor grayColor];
                     break;
+                    //                case 'K':
+                    //                    currentColor = [UIColor
+                    //                    modeAwareGrayText];
+                    break;
                 case 'R':
                     currentColor = [UIColor redColor];
                     break;
@@ -504,8 +476,6 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
 - (NSString *)removeMarkUp {
     return [self attributedStringFromMarkUpWithFont:nil].string;
 }
-
-
 
 - (NSString *)markDownToMarkUp {
     NSScanner *newlineScanner = [NSScanner scannerWithString:self];

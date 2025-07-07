@@ -54,6 +54,7 @@
 // #D - dark mode aware text (black or white)
 // #! - dark mode aware system-wide alert color (yellow or black)
 // #U - dark mode aware blue.
+// #K - mode aware gray
 // #E - accent color
 // #0 - black
 // #O - orange
