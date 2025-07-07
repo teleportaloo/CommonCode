@@ -333,9 +333,8 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                 case 'A':
                     currentColor = [UIColor grayColor];
                     break;
-                    //                case 'K':
-                    //                    currentColor = [UIColor
-                    //                    modeAwareGrayText];
+                case 'K':
+                    currentColor = [UIColor modeAwareGrayText];
                     break;
                 case 'R':
                     currentColor = [UIColor redColor];
