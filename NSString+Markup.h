@@ -88,9 +88,6 @@
 // Links - there is a space after the URL to indicate the end
 // #Lhttp://apple.com Text#T
 
-//- (NSMutableAttributedString *_Nonnull)
-//    attributedStringFromMarkUp; // Uses large font
-// - (NSMutableAttributedString *_Nonnull)smallAttributedStringFromMarkUp;
 - (NSMutableAttributedString *_Nonnull)attributedStringFromMarkUpWithFont:
     (UIFont *_Nullable)font;
 - (NSMutableAttributedString *_Nonnull)

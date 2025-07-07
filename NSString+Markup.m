@@ -336,16 +336,6 @@ static NSString *newl = @"\n";
     return string;
 }
 
-- (NSMutableAttributedString *)smallAttributedStringFromMarkUp {
-    return
-        [self attributedStringFromMarkUpWithFont:nil]; // MainFonts.smallFont];
-}
-
-- (NSMutableAttributedString *)attributedStringFromMarkUp {
-    return
-        [self attributedStringFromMarkUpWithFont:nil]; // MainFonts.basicFont];
-}
-
 #define FONT_DELTA_S (1.0)
 #define FONT_DELTA_M (2.0)
 #define FONT_DELTA_L (4.0)
