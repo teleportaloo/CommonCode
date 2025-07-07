@@ -53,7 +53,7 @@ static NSString *newl = @"\n";
                      color:(UIColor *)color
                       link:(NSString *)link
                     string:(NSMutableAttributedString *)string {
-    // DEBUG_LOGS(substring);
+    // DEBUG_LOG_NSString(substring);
     if (font == nil) {
         NSAttributedString *segment = self.attributedString;
         [string appendAttributedString:segment];

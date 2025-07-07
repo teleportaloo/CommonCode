@@ -24,4 +24,4 @@
 #import <Foundation/Foundation.h>
 #include <stdio.h>
 
-void DebugAssert() { NSLog(@"Assertion"); }
+void CommonDebugAssert() { NSLog(@"Assertion"); }

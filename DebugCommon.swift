@@ -29,7 +29,7 @@
         line: Int = #line,
         function: String = #function
     ) {
-        if (DebugLogLevel() & level.rawValue) != 0 {
+        if (CommonDebugLogLevel() & level.rawValue) != 0 {
             let output = messages.map { "\($0)" }.joined(separator: " ")
             let fileName = (file as NSString).lastPathComponent
             print("<\(fileName):\(function):\(line)> \(output)")

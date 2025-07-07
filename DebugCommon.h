@@ -1,6 +1,5 @@
 //
-//  DebugLogging.h
-//  Automata
+//  DebugCommon.h
 //
 //  Created by Andrew Wallace on 4/18/20.
 //
@@ -19,8 +18,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-
 #ifndef DebugCommon_h
 #define DebugCommon_h
 
@@ -32,12 +29,11 @@ extern "C" {
 #import <Foundation/Foundation.h>
 #endif
 
-extern long DebugLogLevel(void);
-extern void DebugAssert(void);
+extern long CommonDebugLogLevel(void);
+extern void CommonDebugAssert(void);
 
 #if defined __cplusplus
 };
-
 #endif
 
 #define DEBUG_BLOCK(X)                                                         \
@@ -45,7 +41,7 @@ extern void DebugAssert(void);
         void (^block)(void) = (X);                                             \
         block();                                                               \
     }
-#define DEBUG_ON_FOR_FILE ((DebugLogLevel() & DEBUG_LEVEL_FOR_FILE))
+#define DEBUG_ON_FOR_FILE ((CommonDebugLogLevel() & DEBUG_LEVEL_FOR_FILE))
 #define DEBUG_AND(X) (DEBUG_ON_FOR_FILE) ? ((X)) : (FALSE)
 
 #define DEBUG_LOG(s, ...)                                                      \
@@ -60,27 +56,43 @@ extern void DebugAssert(void);
 #define ASSERT(X)                                                              \
     if (!(X)) {                                                                \
         NSLog(@"ASSERTION Failed: " @ #X);                                     \
-        DebugAssert();                                                         \
+        CommonDebugAssert();                                                   \
         raise(SIGINT);                                                         \
     }
 #define DEBUG_MODE @" debug"
 
+#define DEBUG_LOG_MAYBE(C, S, ...)                                             \
+    if (DEBUG_ON_FOR_FILE && (C)) {                                            \
+        NSLog(@"<%04x-%s:%d> %@", (int)DEBUG_LEVEL_FOR_FILE, __func__,         \
+              __LINE__, [NSString stringWithFormat:(S), ##__VA_ARGS__]);       \
+    }
+
 #else
+
 #define DEBUG_BLOCK(X)
 #define DEBUG_ON_FOR_FILE (FALSE)
 #define DEBUG_LOG(s, ...)
 #define DEBUG_PRINTF(format, args...)
 #define ASSERT(X)
 #define DEBUG_MODE @""
-
+#define DEBUG_LOG_MAYBE(C, S, ...)
+#define DEBUG_AND(X) (false)
 
 #endif
 
 #define DEBUG_HERE() DEBUG_LOG(@"here")
+#define DEBUG_LOG_RAW(s, ...)                                                  \
+    if (DEBUG_ON_FOR_FILE) {                                                   \
+        NSLog(s, ##__VA_ARGS__);                                               \
+    }
 #define ERROR_LOG(s, ...)                                                      \
     NSLog(@"<%s:%d> %@", __func__, __LINE__,                                   \
           [NSString stringWithFormat:(s), ##__VA_ARGS__])
-
+#define WARNING_LOG(s, ...)                                                    \
+    {                                                                          \
+        NSLog(@"**** WARNING **** <%s:%d> %@", __func__, __LINE__,             \
+              [NSString stringWithFormat:(s), ##__VA_ARGS__]);                 \
+    }
 #define DEBUG_LOG_BOOL(B) DEBUG_LOG(@"%-40s %@", #B, (B) ? @"True" : @"False")
 #define DEBUG_LOG_CGRect(X)                                                    \
     DEBUG_LOG(@"%-40s (%g, %g) -> (%g, %g) (%g, %g)", #X, (X).origin.x,        \
@@ -90,7 +102,9 @@ extern void DebugAssert(void);
 #define DEBUG_LOG_NSString(X) DEBUG_LOG(@"%-40s %@", #X, X)
 #define DEBUG_LOG_CGPoint(X) DEBUG_LOG(@"%-40s %@", #X, NSStringFromCGPoint(X))
 #define DEBUG_LOG_CGFloat(X) DEBUG_LOG(@"%-40s %g", #X, (CGFloat)(X))
+#define DEBUG_LOG_double(X) DEBUG_LOG(@"%-40s %f", #X, (double)(X))
 #define DEBUG_LOG_long(X) DEBUG_LOG(@"%-40s %ld", #X, (long)(X))
+#define DEBUG_LOG_ulong(X) DEBUG_LOG(@"%-40s %lu", #X, (unsigned long)(X))
 #define DEBUG_LOG_longX(X) DEBUG_LOG(@"%-40s 0x%lx", #X, (long)(X))
 #define DEBUG_LOG_NSDate(X)                                                    \
     {                                                                          \
@@ -109,8 +123,16 @@ extern void DebugAssert(void);
     if (error) {                                                               \
         ERROR_LOG(@"NSError: %@\n", error.description);                        \
     }
-
+#define LOG_NSError_info(error, S, ...)                                        \
+    if (error) {                                                               \
+        ERROR_LOG(@"NSError: %@\n %@", error.description,                      \
+                  [NSString stringWithFormat:(S), ##__VA_ARGS__]);             \
+    }
+#define DEBUG_FUNC() DEBUG_LOG(@"enter")
+#define DEBUG_FUNCEX() DEBUG_LOG(@"exit")
 #define DEBUG_LOG_description(X) DEBUG_LOG(@"%-40s %@", #X, (X).description)
-
+#define DEBUG_LOG_class(X) DEBUG_LOG(@"%s: %s", #X, object_getClassName(X))
+#define DEBUG_LOG_NSIndexPath(I)                                               \
+    DEBUG_LOG(@"%s: section %d row %d", #I, (int)((I).section), (int)((I).row));
 
 #endif /* DebugLogging_h */
