@@ -660,10 +660,6 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
     return [[NSAttributedString alloc] initWithString:self attributes:attrs];
 }
 
-- (NSString *)markedUpLinkToStopId {
-    return [NSString stringWithFormat:@"Stop ID #Lid:%@ %@#T", self, self];
-}
-
 - (NSString *)removeSingleLineBreaks {
     // Replace single line breaks
     NSRegularExpression *regex =

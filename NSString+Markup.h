@@ -27,16 +27,6 @@
 
 @interface NSString (Markup)
 
-@property(nonatomic, readonly, copy)
-    NSMutableAttributedString *_Nonnull mutableAttributedString;
-@property(nonatomic, readonly, copy)
-    NSAttributedString *_Nonnull attributedString;
-@property(nonatomic, readonly)
-    NSString *_Nonnull stringWithTrailingSpaceIfNeeded;
-@property(nonatomic, readonly) NSString *_Nonnull stringByTrimmingWhitespace;
-@property(nonatomic, readonly) unichar firstUnichar;
-@property(nonatomic, readonly) unichar lastUnichar;
-
 // A simple markup for basic text formatting.
 // # is the escape character for formatting.
 //
@@ -95,7 +85,25 @@
                              fixedFont:(UIFont *_Nullable)fixedFont;
 - (NSString *_Nonnull)safeEscapeForMarkUp;
 - (NSString *_Nonnull)removeMarkUp;
-- (NSString *_Nonnull)markedUpLinkToStopId;
+
+// We support a very small subset of markdown
+// Use a # for a heading - will just make bold and 2 points bigger. # must be
+// first character Use ** for bold Start a line with - or + for bullets It
+// assumes that lines are to be contatonated into a paragraph unless there are
+// two line breaks between the lines. Start a line with <pre> for a fixed width
+// font and no more formatting until... Start a line with </pre> to return to
+// regular.
+- (NSString *_Nonnull)markDownToMarkUp;
+
+// General helper functions
+
+- (NSString *_Nonnull)removeSingleLineBreaks;
+- (NSMutableAttributedString *_Nonnull)mutableAttributedString;
+- (NSAttributedString *_Nonnull)attributedString;
+- (NSString *_Nonnull)stringWithTrailingSpaceIfNeeded;
+- (NSString *_Nonnull)stringByTrimmingWhitespace;
+- (unichar)firstUnichar;
+- (unichar)lastUnichar;
 
 // URL encoding helpers
 - (NSString *_Nonnull)percentEncodeUrl;
@@ -124,16 +132,5 @@
 
 - (NSAttributedString *_Nonnull)attributedStringWithAttributes:
     (nullable NSDictionary<NSAttributedStringKey, id> *)attrs;
-
-- (NSString *_Nonnull)removeSingleLineBreaks;
-
-// We support a very small subset of markdown
-// Use a # for a heading - will just make bold and 2 points bigger. # must be
-// first character Use ** for bold Start a line with - or + for bullets It
-// assumes that lines are to be contatonated into a paragraph unless there are
-// two line breaks between the lines. Start a line with <pre> for a fixed width
-// font and no more formatting until... Start a line with </pre> to return to
-// regular.
-- (NSString *_Nonnull)markDownToMarkUp;
 
 @end
