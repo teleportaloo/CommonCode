@@ -135,4 +135,9 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_NSIndexPath(I)                                               \
     DEBUG_LOG(@"%s: section %d row %d", #I, (int)((I).section), (int)((I).row));
 
+#define DEBUG_LOG_LEVEL_1(X)                                                   \
+    logLevel |= X;                                                             \
+    NSLog(@"    Log 0x%04x %@", (unsigned int)X, @ #X);
+#define DEBUG_LOG_LEVEL_0(X)
+
 #endif /* DebugLogging_h */
