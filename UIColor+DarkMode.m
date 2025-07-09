@@ -31,21 +31,16 @@
 + (UIColor *)modeAwareText {
 #if TARGET_OS_WATCH
 #else
-    if (@available(iOS 13.0, *)) {
-        return [UIColor labelColor];
-    }
+    return [UIColor labelColor];
 #endif
-    return [UIColor blackColor];
 }
 
 + (UIColor *)modeAwareBlue {
 #if TARGET_OS_WATCH
 #else
-    if (@available(iOS 13.0, *)) {
-        if (IOS_DARK_MODE) {
-            // These colors are based in the "information icon" (i) color
-            return [UIColor colorWithHTMLColor:0x0099FF];
-        }
+    if (IOS_DARK_MODE) {
+        // These colors are based in the "information icon" (i) color
+        return [UIColor colorWithHTMLColor:0x0099FF];
     }
 #endif
     return [UIColor colorWithHTMLColor:0x0066FF];
