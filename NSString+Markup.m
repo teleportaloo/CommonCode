@@ -29,8 +29,8 @@
 #import "UIColor+HTML.h"
 #import <TargetConditionals.h>
 
-static NSString *markupEscape = @"#";
-static NSString *newl = @"\n";
+#define MARKUP_ESCAPE @"#"
+#define NEWL @"\n"
 
 @implementation NSString (Markup)
 
@@ -152,7 +152,7 @@ static NSString *newl = @"\n";
 }
 
 - (NSString *)safeEscapeForMarkUp {
-    if (![self containsString:markupEscape]) {
+    if (![self containsString:MARKUP_ESCAPE]) {
         return self;
     }
 
@@ -163,7 +163,7 @@ static NSString *newl = @"\n";
     NSString *substring = nil;
 
     while (!escapeScanner.isAtEnd) {
-        [escapeScanner scanUpToString:markupEscape intoString:&substring];
+        [escapeScanner scanUpToString:MARKUP_ESCAPE intoString:&substring];
 
         if (substring != nil) {
             [string appendString:substring];
@@ -171,7 +171,7 @@ static NSString *newl = @"\n";
         }
 
         if (!escapeScanner.isAtEnd) {
-            [string appendString:markupEscape];
+            [string appendString:MARKUP_ESCAPE];
             [string appendString:@"h"];
             escapeScanner.scanLocation++;
         }
@@ -227,7 +227,7 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
     while (!escapeScanner.isAtEnd) {
         @autoreleasepool {
             substring = nil;
-            [escapeScanner scanUpToString:markupEscape intoString:&substring];
+            [escapeScanner scanUpToString:MARKUP_ESCAPE intoString:&substring];
 
             if (!escapeScanner.isAtEnd) {
                 escapeScanner.scanLocation++;
@@ -239,7 +239,7 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                 switch (c) {
                 case 'h':
                 case '#':
-                    substring = addToSubstring(markupEscape, substring);
+                    substring = addToSubstring(MARKUP_ESCAPE, substring);
                     break;
                 case 't':
                     substring = addToSubstring(@"\t", substring);
@@ -490,7 +490,7 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
     bool pre = false;
 
     while (!newlineScanner.isAtEnd) {
-        [newlineScanner scanUpToString:newl intoString:&substring];
+        [newlineScanner scanUpToString:NEWL intoString:&substring];
 
         DEBUG_LOG(@"Substring: %@", substring);
 
@@ -513,16 +513,16 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                 [newString appendString:@"#P"];
             } else if (pre) {
                 [newString appendString:substring];
-                [newString appendString:newl];
+                [newString appendString:NEWL];
             } else if (c == '-' || c == '+') {
                 if (!indented) {
                     if (!spaced) {
-                        [newString appendString:newl];
+                        [newString appendString:NEWL];
                     }
                     [newString appendFormat:@"#>"];
                     indented = true;
                 } else {
-                    [newString appendString:newl];
+                    [newString appendString:NEWL];
                 }
                 [newString
                     appendFormat:@"•\t%@ ", [substring substringFromIndex:1]
@@ -530,7 +530,7 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                 spaced = false;
             } else if (c == '#') {
                 if (!spaced) {
-                    [newString appendString:newl];
+                    [newString appendString:NEWL];
                 }
                 [newString appendFormat:@"#b#)%@#b#(\n",
                                         [substring substringFromIndex:1]
@@ -546,15 +546,15 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
             if (indented) {
                 indented = false;
                 [newString appendString:@"\n#<"];
-                [newString appendString:newl];
+                [newString appendString:NEWL];
                 spaced = false;
             } else if (pre) {
-                [newString appendString:newl];
+                [newString appendString:NEWL];
             } else {
                 if (!spaced) {
-                    [newString appendString:newl];
+                    [newString appendString:NEWL];
                 }
-                [newString appendString:newl];
+                [newString appendString:NEWL];
                 spaced = true;
             }
         }
