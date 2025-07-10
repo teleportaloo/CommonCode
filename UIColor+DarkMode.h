@@ -28,6 +28,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIColor *)modeAwareText;
 + (UIColor *)modeAwareBlue;
 + (UIColor *)modeAwareGrayText;
++ (UIColor *)randomColor;
+
+
++ (bool)darkMode;
 
 @end
 

@@ -22,38 +22,48 @@
 #import "UIColor+DarkMode.h"
 #import "UIColor+HTML.h"
 
-#define IOS_DARK_MODE                                                          \
-    ([UIScreen mainScreen].traitCollection.userInterfaceStyle ==               \
-     UIUserInterfaceStyleDark)
 
 @implementation UIColor (DarkMode)
 
++ (bool)darkMode {
+#if TARGET_OS_WATCH
+    return false;
+#else
+    return ([UIScreen mainScreen].traitCollection.userInterfaceStyle ==
+            UIUserInterfaceStyleDark);
+#endif
+}
+
+
 + (UIColor *)modeAwareText {
 #if TARGET_OS_WATCH
+    return [UIColor blackColor];
 #else
     return [UIColor labelColor];
 #endif
 }
 
 + (UIColor *)modeAwareBlue {
-#if TARGET_OS_WATCH
-#else
-    if (IOS_DARK_MODE) {
+    if (self.darkMode) {
         // These colors are based in the "information icon" (i) color
         return [UIColor colorWithHTMLColor:0x0099FF];
     }
-#endif
     return [UIColor colorWithHTMLColor:0x0066FF];
 }
 
 + (UIColor *)modeAwareGrayText {
-#if TARGET_OS_WATCH
-#else
-    if (IOS_DARK_MODE) {
+    if (self.darkMode) {
         return [UIColor lightGrayColor];
     }
-#endif
     return [UIColor grayColor];
+}
+
++ (UIColor *)randomColor {
+    CGFloat red = (double)(arc4random() % 256) / 255.0;
+    CGFloat green = (double)(arc4random() % 256) / 255.0;
+    CGFloat blue = (double)(arc4random() % 256) / 255.0;
+
+    return [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
 }
 
 @end
