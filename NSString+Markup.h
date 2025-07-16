@@ -79,6 +79,9 @@
 // Links - there is a space after the URL to indicate the end
 // #Lhttp://apple.com Text#T
 
+// SF symbols
+// #Ssymbol insert SF symbol by name e.g. #Sbriefcase.fill
+
 - (NSMutableAttributedString *_Nonnull)attributedStringFromMarkUpWithFont:
     (UIFont *_Nullable)font;
 - (NSMutableAttributedString *_Nonnull)
@@ -96,5 +99,7 @@
 // regular.
 - (NSString *_Nonnull)markDownToMarkUp;
 
+- (NSAttributedString *_Nonnull)attributedStringFromNamedSymbolWithFont:
+    (UIFont *_Nonnull)font;
 
 @end

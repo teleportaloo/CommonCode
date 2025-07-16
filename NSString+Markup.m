@@ -198,6 +198,44 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
     return substring;
 }
 
+- (NSAttributedString *)attributedStringFromNamedSymbolWithFont:(UIFont *)font {
+#if TARGET_OS_WATCH
+    if (@available(watchOS 6.0, *)) {
+#endif
+        UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration
+                                              configurationWithPointSize:font.pointSize
+                                              weight:UIImageSymbolWeightRegular];
+        UIImage *image = [UIImage systemImageNamed:self withConfiguration:config];
+        
+        if (!image) {
+            return @"?".attributedString;
+        }
+        
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+        attachment.image = image;
+        
+        // Target height = cap height (not full pointSize)
+        CGFloat targetHeight = font.capHeight;
+        CGFloat aspectRatio = image.size.width / image.size.height;
+        CGFloat targetWidth = targetHeight * aspectRatio;
+        
+        // Vertical alignment tweak:
+        // Center the image relative to the font’s baseline box
+        CGFloat baselineOffset = (font.capHeight - targetHeight) / 2.0 -
+        1.0; // -1.0 empirically centers better
+        
+        attachment.bounds =
+        CGRectMake(0, baselineOffset, targetWidth, targetHeight);
+        
+        return [NSAttributedString attributedStringWithAttachment:attachment];
+        
+#if TARGET_OS_WATCH
+    } else {
+        return @"?".attributedString;
+    }
+#endif
+}
+
 // See header for formatting markup
 - (NSMutableAttributedString *)
     attributedStringFromMarkUpWithFont:(UIFont *)font
@@ -420,6 +458,36 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                         link = linkScan.stringByRemovingPercentEncoding;
                     } else {
                         link = nil;
+                    }
+
+                    if (!escapeScanner.isAtEnd) {
+                        escapeScanner.scanLocation++;
+                    }
+                    break;
+                }
+                case 'S': {
+                    NSString *symbolName = nil;
+                    [escapeScanner scanUpToString:@" " intoString:&symbolName];
+
+                    if (symbolName) {
+                        if (fontChanged && currentFont) {
+                            currentFont = [self updateFont:currentFont
+                                                 pointSize:pointSize
+                                                      bold:boldText
+                                                    italic:italicText];
+                            fontChanged = NO;
+                        }
+
+                        if (currentFont) {
+                            [string
+                                appendAttributedString:
+                                    [symbolName
+                                        attributedStringFromNamedSymbolWithFont:
+                                            currentFont]];
+                        } else {
+                            [string
+                                appendAttributedString:@"?".attributedString];
+                        }
                     }
 
                     if (!escapeScanner.isAtEnd) {
