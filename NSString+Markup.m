@@ -203,37 +203,64 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
     if (@available(watchOS 6.0, *)) {
 #endif
         UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration
-                                              configurationWithPointSize:font.pointSize
-                                              weight:UIImageSymbolWeightRegular];
-        UIImage *image = [UIImage systemImageNamed:self withConfiguration:config];
-        
+            configurationWithPointSize:font.pointSize
+                                weight:UIImageSymbolWeightRegular];
+        UIImage *image = [UIImage systemImageNamed:self
+                                 withConfiguration:config];
+
         if (!image) {
             return @"?".attributedString;
         }
-        
+
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = image;
-        
+
         // Target height = cap height (not full pointSize)
         CGFloat targetHeight = font.capHeight;
         CGFloat aspectRatio = image.size.width / image.size.height;
         CGFloat targetWidth = targetHeight * aspectRatio;
-        
+
         // Vertical alignment tweak:
         // Center the image relative to the font’s baseline box
         CGFloat baselineOffset = (font.capHeight - targetHeight) / 2.0 -
-        1.0; // -1.0 empirically centers better
-        
+                                 1.0; // -1.0 empirically centers better
+
         attachment.bounds =
-        CGRectMake(0, baselineOffset, targetWidth, targetHeight);
-        
+            CGRectMake(0, baselineOffset, targetWidth, targetHeight);
+
         return [NSAttributedString attributedStringWithAttachment:attachment];
-        
+
 #if TARGET_OS_WATCH
     } else {
         return @"?".attributedString;
     }
 #endif
+}
+
+- (NSAttributedString *)attributedStringFromImageWithFont:(UIFont *)font {
+    UIImage *image = [UIImage imageNamed:self];
+
+    if (!image) {
+        return @"?".attributedString;
+    }
+
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+    attachment.image = image;
+
+    // Target height = cap height (not full pointSize)
+    CGFloat targetHeight = font.capHeight;
+    CGFloat aspectRatio = image.size.width / image.size.height;
+    CGFloat targetWidth = targetHeight * aspectRatio;
+
+    // Vertical alignment tweak:
+    // Center the image relative to the font’s baseline box
+    CGFloat baselineOffset = (font.capHeight - targetHeight) / 2.0 -
+                             1.0; // -1.0 empirically centers better
+
+    attachment.bounds =
+        CGRectMake(0, baselineOffset, targetWidth, targetHeight);
+
+    return [NSAttributedString attributedStringWithAttachment:attachment];
 }
 
 // See header for formatting markup
@@ -306,12 +333,6 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
 
                 switch (c) {
                 default:
-                    break;
-
-                case 'f':
-                    break;
-
-                case 'F':
                     break;
 
                 case 'h':
@@ -484,6 +505,35 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                                     [symbolName
                                         attributedStringFromNamedSymbolWithFont:
                                             currentFont]];
+                        } else {
+                            [string
+                                appendAttributedString:@"?".attributedString];
+                        }
+                    }
+
+                    if (!escapeScanner.isAtEnd) {
+                        escapeScanner.scanLocation++;
+                    }
+                    break;
+                }
+                case 'F': {
+                    NSString *fileName = nil;
+                    [escapeScanner scanUpToString:@" " intoString:&fileName];
+
+                    if (fileName) {
+                        if (fontChanged && currentFont) {
+                            currentFont = [self updateFont:currentFont
+                                                 pointSize:pointSize
+                                                      bold:boldText
+                                                    italic:italicText];
+                            fontChanged = NO;
+                        }
+
+                        if (currentFont) {
+                            [string appendAttributedString:
+                                        [fileName
+                                            attributedStringFromImageWithFont:
+                                                currentFont]];
                         } else {
                             [string
                                 appendAttributedString:@"?".attributedString];

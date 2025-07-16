@@ -45,8 +45,6 @@
 // #- decreases font size by 1 point
 // #) increases font size by 2 points
 // #] increases font size by 4 points
-// #f small font
-// #F larger font (basic font)
 // #X switch to fixed width font of the same size, caching original font
 // #P pop back original font
 
@@ -71,23 +69,30 @@
 // Positioning
 // #> - increase indent and first tab all by font point size
 // #< - decrease indentatation
-// #~ - increase 2nd tab stop by 5 time point size
-// #. - decrease 2nd tab stop by 5 time point size
+// #~ - increase 2nd tab stop by 5 times point size
+// #. - decrease 2nd tab stop by 5 times point size
 // #2 - toggle indent to 2nd tab stop
 // #| - toggle center text
 
-// Links - there is a space after the URL to indicate the end
+// Links
+// Note there is a space after the URL to indicate the end
 // #Lhttp://apple.com Text#T
 
-// SF symbols
+// Images and SF symbols
 // #Ssymbol insert SF symbol by name e.g. #Sbriefcase.fill
+// #Fimage insert image from bundle by name e.g. #Lapple.png
 
 - (NSMutableAttributedString *_Nonnull)attributedStringFromMarkUpWithFont:
     (UIFont *_Nullable)font;
 - (NSMutableAttributedString *_Nonnull)
     attributedStringFromMarkUpWithFont:(UIFont *_Nullable)font
                              fixedFont:(UIFont *_Nullable)fixedFont;
+
+// This function adds extra #s to a string so they will not be interpreted as
+// markup
 - (NSString *_Nonnull)safeEscapeForMarkUp;
+
+// Removes the markup - usually for logging
 - (NSString *_Nonnull)removeMarkUp;
 
 // We support a very small subset of markdown
@@ -99,7 +104,11 @@
 // regular.
 - (NSString *_Nonnull)markDownToMarkUp;
 
+// We can add an SF Symbol or image into a string at the same size as the font
 - (NSAttributedString *_Nonnull)attributedStringFromNamedSymbolWithFont:
+    (UIFont *_Nonnull)font;
+
+- (NSAttributedString *_Nonnull)attributedStringFromImageWithFont:
     (UIFont *_Nonnull)font;
 
 @end
