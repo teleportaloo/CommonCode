@@ -198,26 +198,38 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
     return substring;
 }
 
-- (NSAttributedString *)attributedStringFromNamedSymbolWithFont:(UIFont *)font {
+- (NSAttributedString *)attributedStringFromNamedSymbolWithFont:(UIFont *)font
+                                                          color:
+                                                              (UIColor *)color {
 #if TARGET_OS_WATCH
     if (@available(watchOS 6.0, *)) {
 #endif
         UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration
             configurationWithPointSize:font.pointSize
                                 weight:UIImageSymbolWeightRegular];
-        UIImage *image = [UIImage systemImageNamed:self
-                                 withConfiguration:config];
+        __block UIImage *symbolImage = [UIImage systemImageNamed:self
+                                               withConfiguration:config];
 
-        if (!image) {
+        symbolImage = [symbolImage
+            imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+        // Render it with color using UIGraphicsImageRenderer
+        if (color != nil) {
+            symbolImage = [symbolImage
+                imageWithTintColor:color
+                     renderingMode:UIImageRenderingModeAlwaysOriginal];
+        }
+
+        if (!symbolImage) {
             return @"?".attributedString;
         }
 
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
-        attachment.image = image;
+        attachment.image = symbolImage;
 
         // Target height = cap height (not full pointSize)
         CGFloat targetHeight = font.capHeight;
-        CGFloat aspectRatio = image.size.width / image.size.height;
+        CGFloat aspectRatio = symbolImage.size.width / symbolImage.size.height;
         CGFloat targetWidth = targetHeight * aspectRatio;
 
         // Vertical alignment tweak:
@@ -248,7 +260,7 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
     attachment.image = image;
 
     // Target height = cap height (not full pointSize)
-    CGFloat targetHeight = font.capHeight;
+    CGFloat targetHeight = font.capHeight + 1;
     CGFloat aspectRatio = image.size.width / image.size.height;
     CGFloat targetWidth = targetHeight * aspectRatio;
 
@@ -504,7 +516,9 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                                 appendAttributedString:
                                     [symbolName
                                         attributedStringFromNamedSymbolWithFont:
-                                            currentFont]];
+                                            currentFont
+                                                                          color:
+                                                                              currentColor]];
                         } else {
                             [string
                                 appendAttributedString:@"?".attributedString];
@@ -530,10 +544,10 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                         }
 
                         if (currentFont) {
-                            [string appendAttributedString:
-                                        [fileName
-                                            attributedStringFromImageWithFont:
-                                                currentFont]];
+                            [string
+                                appendAttributedString:
+                                    [fileName attributedStringFromImageWithFont:
+                                                  currentFont]];
                         } else {
                             [string
                                 appendAttributedString:@"?".attributedString];

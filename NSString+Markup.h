@@ -24,6 +24,7 @@
 #import <Foundation/NSEnumerator.h>
 
 @class UIFont;
+@class UIColor;
 
 @interface NSString (Markup)
 
@@ -105,8 +106,9 @@
 - (NSString *_Nonnull)markDownToMarkUp;
 
 // We can add an SF Symbol or image into a string at the same size as the font
-- (NSAttributedString *_Nonnull)attributedStringFromNamedSymbolWithFont:
-    (UIFont *_Nonnull)font;
+- (NSAttributedString *_Nonnull)
+    attributedStringFromNamedSymbolWithFont:(UIFont *_Nonnull)font
+                                      color:(UIColor *_Nullable)color;
 
 - (NSAttributedString *_Nonnull)attributedStringFromImageWithFont:
     (UIFont *_Nonnull)font;
