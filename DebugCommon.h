@@ -141,7 +141,35 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_LEVEL_1(X)                                                   \
     logLevel |= X;                                                             \
     debugStr[@(X)] = [NSString stringWithFormat:@"%-12s", #X];                 \
-    NSLog(@"    Log 0x%04x '%@'", (unsigned int)X, debugStr[@(X)]);
+    NSLog(@"    Log 0x%04x %@", (unsigned int)X, debugStr[@(X)]);
 #define DEBUG_LOG_LEVEL_0(X)
+
+#ifdef DEBUGLOGGING
+
+#define DEBUG_LOG_LEVELS(B)                                                    \
+                                                                               \
+    static NSMutableDictionary *debugStr = nil;                                \
+    NSString *CommonDebugLogStr(debugLogLevel level) {                         \
+        return debugStr[@(level)];                                             \
+    }                                                                          \
+                                                                               \
+    long CommonDebugLogLevel() {                                               \
+        static long logLevel = 0;                                              \
+                                                                               \
+        DoOnce(^{                                                              \
+          NSLog(@"Debug Logging Initializing");                                \
+                                                                               \
+          debugStr = NSMutableDictionary.dictionary;                           \
+                                                                               \
+          B();                                                                 \
+        });                                                                    \
+                                                                               \
+        return logLevel;                                                       \
+    }
+#else
+
+#define DEBUG_LOG_LEVELS(B)
+
+#endif
 
 #endif /* DebugLogging_h */
