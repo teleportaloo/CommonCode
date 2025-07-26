@@ -32,6 +32,7 @@ import StoreKit
         if products == nil && productTask == nil {
             productTask = Task {
                 let products = await fetchProducts(productIds)
+                DEBUG_LOG(.LogTipJar, "got products: \(products ?? []), \(productIds)")
                 DispatchQueue.main.async {
                     self.products = products
                     self.productTask = nil
@@ -78,6 +79,8 @@ import StoreKit
     }
 
     public func startTransactionListener(_ parent: UIViewController) {
+        DEBUG_LOG(.LogTipJar, "startTransactionListener")
+        
         Task { [weak parent, weak self] in
             // Listen for ongoing transaction updates
             for await result in Transaction.updates {

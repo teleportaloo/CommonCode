@@ -30,6 +30,7 @@ extern "C" {
 #endif
 
 extern long CommonDebugLogLevel(void);
+extern NSString *CommonDebugLogStr(debugLogLevel level);
 extern void CommonDebugAssert(void);
 
 #if defined __cplusplus
@@ -46,7 +47,8 @@ extern void CommonDebugAssert(void);
 
 #define DEBUG_LOG(s, ...)                                                      \
     if (DEBUG_ON_FOR_FILE) {                                                   \
-        NSLog(@"<%s:%d> %@", __func__, __LINE__,                               \
+        NSLog(@"<%@:%s:%d> %@", CommonDebugLogStr(DEBUG_LEVEL_FOR_FILE),       \
+              __func__, __LINE__,                                              \
               [NSString stringWithFormat:(s), ##__VA_ARGS__]);                 \
     }
 #define DEBUG_PRINTF(format, args...)                                          \
@@ -63,8 +65,9 @@ extern void CommonDebugAssert(void);
 
 #define DEBUG_LOG_MAYBE(C, S, ...)                                             \
     if (DEBUG_ON_FOR_FILE && (C)) {                                            \
-        NSLog(@"<%04x-%s:%d> %@", (int)DEBUG_LEVEL_FOR_FILE, __func__,         \
-              __LINE__, [NSString stringWithFormat:(S), ##__VA_ARGS__]);       \
+        NSLog(@"<%@:%s:%d> %@", CommonDebugLogStr(DEBUG_LEVEL_FOR_FILE),       \
+              __func__, __LINE__,                                              \
+              [NSString stringWithFormat:(S), ##__VA_ARGS__]);                 \
     }
 
 #else
@@ -137,7 +140,8 @@ extern void CommonDebugAssert(void);
 
 #define DEBUG_LOG_LEVEL_1(X)                                                   \
     logLevel |= X;                                                             \
-    NSLog(@"    Log 0x%04x %@", (unsigned int)X, @ #X);
+    debugStr[@(X)] = [NSString stringWithFormat:@"%-12s", #X];                 \
+    NSLog(@"    Log 0x%04x '%@'", (unsigned int)X, debugStr[@(X)]);
 #define DEBUG_LOG_LEVEL_0(X)
 
 #endif /* DebugLogging_h */

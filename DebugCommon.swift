@@ -32,7 +32,9 @@
         if (CommonDebugLogLevel() & level.rawValue) != 0 {
             let output = messages.map { "\($0)" }.joined(separator: " ")
             let fileName = (file as NSString).lastPathComponent
-            print("<\(fileName):\(function):\(line)> \(output)")
+            print(
+                "<\(CommonDebugLogStr(level) ?? ""):\(fileName):\(function):\(line)> \(output)"
+            )
         }
     }
 #else
