@@ -177,10 +177,12 @@ extern void CommonDebugAssert(void);
         });                                                                    \
                                                                                \
         return logLevel;                                                       \
-    }
+    }                                                                          \
+    void CommonDebugAssert() { NSLog(@"Assertion"); }
 #else
 
-#define DEBUG_LOG_LEVELS(B)
+#define DEBUG_LOG_LEVELS(B)                                                    \
+    void CommonDebugAssert() { NSLog(@"Assertion"); }
 
 #endif
 
