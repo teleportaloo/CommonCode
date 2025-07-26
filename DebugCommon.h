@@ -30,7 +30,7 @@ extern "C" {
 #endif
 
 extern long CommonDebugLogLevel(void);
-extern NSString *CommonDebugLogStr(debugLogLevel level);
+extern const char *CommonDebugLogStr(debugLogLevel level);
 extern void CommonDebugAssert(void);
 
 #if defined __cplusplus
@@ -45,7 +45,7 @@ extern void CommonDebugAssert(void);
 #define DEBUG_ON_FOR_FILE ((CommonDebugLogLevel() & DEBUG_LEVEL_FOR_FILE))
 #define DEBUG_AND(X) (DEBUG_ON_FOR_FILE) ? ((X)) : (FALSE)
 
-#define DEBUG_LOG_PREFIX @"<%@:%s:%d> "
+#define DEBUG_LOG_PREFIX @"<%-12s:%s:%d> "
 #define DEBUG_LOG_PREFIX_VALS                                                  \
     CommonDebugLogStr(DEBUG_LEVEL_FOR_FILE), __func__, __LINE__
 
@@ -152,21 +152,21 @@ extern void CommonDebugAssert(void);
 
 #define DEBUG_LOG_LEVEL_1(X)                                                   \
     logLevel |= X;                                                             \
-    debugStr[@(X)] = [NSString stringWithFormat:@"%-12s", #X];                 \
-    NSLog(@"    Log 0x%04x %@", (unsigned int)X, debugStr[@(X)]);
+    debugStr[@(X)] = [NSValue valueWithPointer:#X];                            \
+    NSLog(@"    Log 0x%04x %s", (unsigned int)X,                               \
+          (char *)debugStr[@((NSInteger)X)].pointerValue);
+
 #define DEBUG_LOG_LEVEL_0(X)
 
 #ifdef DEBUGLOGGING
 
 #define DEBUG_LOG_LEVELS(B)                                                    \
-                                                                               \
-    static NSMutableDictionary *debugStr = nil;                                \
-    NSString *CommonDebugLogStr(debugLogLevel level) {                         \
-        return debugStr[@(level)];                                             \
+    static NSMutableDictionary<NSNumber *, NSValue *> *debugStr = nil;         \
+    const char *CommonDebugLogStr(debugLogLevel level) {                       \
+        return (char *)debugStr[@((NSInteger)level)].pointerValue;             \
     }                                                                          \
-                                                                               \
     long CommonDebugLogLevel() {                                               \
-        static long logLevel = 0;                                              \
+        static NSInteger logLevel = 0;                                         \
                                                                                \
         DoOnce(^{                                                              \
           NSLog(@"Debug Logging Initializing");                                \
