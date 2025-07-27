@@ -150,20 +150,29 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_NSIndexPath(I)                                               \
     DEBUG_LOG(@"%s: section %d row %d", #I, (int)((I).section), (int)((I).row));
 
+// For the log level name, wee store a malloced padded cstring into NSData
+// that would free it, but it will never get around to freeing it.
 #define DEBUG_LOG_LEVEL_1(X)                                                   \
-    logLevel |= X;                                                             \
-    debugStr[@(X)] = [NSValue valueWithPointer:#X];                            \
-    NSLog(@"    Log 0x%04x %s", (unsigned int)X,                               \
-          (char *)debugStr[@((NSInteger)X)].pointerValue);
+    {                                                                          \
+        logLevel |= X;                                                         \
+        const char *str =                                                      \
+            [[NSString stringWithFormat:@"%-12s", #X] UTF8String];             \
+        debugLevelNames[@(X)] = [NSData dataWithBytesNoCopy:strdup(str)        \
+                                                     length:strlen(str) + 1    \
+                                               freeWhenDone:YES];              \
+                                                                               \
+        NSLog(@"    Log 0x%04x %s", (unsigned int)X,                           \
+              (const char *)debugLevelNames[@((NSInteger)X)].bytes);           \
+    }
 
 #define DEBUG_LOG_LEVEL_0(X)
 
 #ifdef DEBUGLOGGING
 
 #define DEBUG_LOG_LEVELS(B)                                                    \
-    static NSMutableDictionary<NSNumber *, NSValue *> *debugStr = nil;         \
+    static NSMutableDictionary<NSNumber *, NSData *> *debugLevelNames = nil;   \
     const char *CommonDebugLogStr(debugLogLevel level) {                       \
-        return (char *)debugStr[@((NSInteger)level)].pointerValue;             \
+        return (const char *)debugLevelNames[@((NSInteger)level)].bytes;       \
     }                                                                          \
     long CommonDebugLogLevel() {                                               \
         static NSInteger logLevel = 0;                                         \
@@ -171,7 +180,7 @@ extern void CommonDebugAssert(void);
         DoOnce(^{                                                              \
           NSLog(@"Debug Logging Initializing");                                \
                                                                                \
-          debugStr = NSMutableDictionary.dictionary;                           \
+          debugLevelNames = NSMutableDictionary.dictionary;                    \
                                                                                \
           B();                                                                 \
         });                                                                    \

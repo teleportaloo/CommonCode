@@ -33,7 +33,7 @@
             let output = messages.map { "\($0)" }.joined(separator: " ")
             let fileName = (file as NSString).lastPathComponent
             print(
-                "<\(CommonDebugLogStr(level) ?? ""):\(fileName):\(function):\(line)> \(output)"
+                "<\(String(cString: CommonDebugLogStr(level))):\(fileName):\(function):\(line)> \(output)"
             )
         }
     }
