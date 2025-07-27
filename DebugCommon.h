@@ -150,16 +150,15 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_NSIndexPath(I)                                               \
     DEBUG_LOG(@"%s: section %d row %d", #I, (int)((I).section), (int)((I).row));
 
-// For the log level name, wee store a malloced padded cstring into NSData
-// that would free it, but it will never get around to freeing it.
+// For the log level name, wee store a  cstring into NSData but it will never
+// get around to freeing it.
 #define DEBUG_LOG_LEVEL_1(X)                                                   \
     {                                                                          \
         logLevel |= X;                                                         \
         const char *str =                                                      \
             [[NSString stringWithFormat:@"%-12s", #X] UTF8String];             \
-        debugLevelNames[@(X)] = [NSData dataWithBytesNoCopy:strdup(str)        \
-                                                     length:strlen(str) + 1    \
-                                               freeWhenDone:YES];              \
+        debugLevelNames[@(X)] = [NSData dataWithBytes:str                      \
+                                               length:strlen(str) + 1];        \
                                                                                \
         NSLog(@"    Log 0x%04x %s", (unsigned int)X,                           \
               (const char *)debugLevelNames[@((NSInteger)X)].bytes);           \
