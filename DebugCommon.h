@@ -150,7 +150,7 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_NSIndexPath(I)                                               \
     DEBUG_LOG(@"%s: section %d row %d", #I, (int)((I).section), (int)((I).row));
 
-// For the log level name, wee store a  cstring into NSData but it will never
+// For the log level name, we store a cstring into NSData but it will never
 // get around to freeing it.
 #define DEBUG_LOG_LEVEL_1(X)                                                   \
     {                                                                          \
