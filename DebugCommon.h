@@ -109,6 +109,7 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_CGSize(X)                                                    \
     DEBUG_LOG(DEBUG_ITEM_PREFIX @"%@", #X, NSStringFromCGSize(X))
 #define DEBUG_LOG_NSString(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%@", #X, X)
+#define DEBUG_LOG_CString(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%s", #X, X)
 #define DEBUG_LOG_CGPoint(X)                                                   \
     DEBUG_LOG(DEBUG_ITEM_PREFIX @"%@", #X, NSStringFromCGPoint(X))
 #define DEBUG_LOG_CGFloat(X)                                                   \
