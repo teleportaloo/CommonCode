@@ -20,18 +20,28 @@
 // limitations under the License.
 
 #import "UIColor+HTML.h"
-
-#define COL_HTML_R(V) (((CGFloat)(((V) >> 16) & 0xFF)) / 255.0)
-#define COL_HTML_G(V) (((CGFloat)(((V) >> 8) & 0xFF)) / 255.0)
-#define COL_HTML_B(V) (((CGFloat)((V) & 0xFF)) / 255.0)
+#import "TaskDispatch.h"
 
 @implementation UIColor (HTML)
 
-+ (UIColor *)colorWithHTMLColor:(long)col {
-    return [UIColor colorWithRed:COL_HTML_R(col)
-                           green:COL_HTML_G(col)
-                            blue:COL_HTML_B(col)
-                           alpha:1.0];
++ (UIColor *)colorWithHTMLColor:(uint32_t)col {
+    static NSCache<NSNumber *, UIColor *> *colorCache;
+    
+    DoOnce(^{
+      colorCache = [NSCache new];
+    });
+
+    UIColor *color = [colorCache objectForKey:@(col)];
+
+    if (color == nil) {
+        color = [UIColor colorWithRed:COL_HTML_R(col)
+                                green:COL_HTML_G(col)
+                                 blue:COL_HTML_B(col)
+                                alpha:COL_HTML_A(col)];
+        [colorCache setObject:color forKey:@(col)];
+    }
+
+    return color;
 }
 
 - (NSString *)hexString {
@@ -77,18 +87,7 @@
         return nil;
     }
 
-    CGFloat alpha = 1.0;
-
-    if ([cleanString length] == 8) {
-        alpha = (rgbValue & 0x000000FF) / 255.0;
-        rgbValue = rgbValue >> 8;
-    }
-
-    CGFloat red = ((rgbValue & 0xFF0000) >> 16) / 255.0;
-    CGFloat green = ((rgbValue & 0x00FF00) >> 8) / 255.0;
-    CGFloat blue = (rgbValue & 0x0000FF) / 255.0;
-
-    return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+    return [UIColor colorWithHTMLColor:(uint32_t)rgbValue];
 }
 
 @end
