@@ -24,9 +24,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 #define HTML_COLOR(X) [UIColor colorWithHTMLColor:(X)]
-#define COL_HTML_A_INT(V) (((V) >> 24) & 0xFF)
-#define COL_HTML_A(V)                                                          \
-    ((COL_HTML_A_INT(V) == 0) ? 1.0 : (((CGFloat)COL_HTML_A_INT(V)) / 255.0))
 #define COL_HTML_R(V) (((CGFloat)(((V) >> 16) & 0xFF)) / 255.0)
 #define COL_HTML_G(V) (((CGFloat)(((V) >> 8) & 0xFF)) / 255.0)
 #define COL_HTML_B(V) (((CGFloat)((V) & 0xFF)) / 255.0)

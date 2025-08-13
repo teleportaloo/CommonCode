@@ -37,7 +37,7 @@
         color = [UIColor colorWithRed:COL_HTML_R(col)
                                 green:COL_HTML_G(col)
                                  blue:COL_HTML_B(col)
-                                alpha:COL_HTML_A(col)];
+                                alpha:1.0];
         [colorCache setObject:color forKey:@(col)];
     }
 
@@ -87,7 +87,18 @@
         return nil;
     }
 
-    return [UIColor colorWithHTMLColor:(uint32_t)rgbValue];
+    CGFloat alpha = 1.0;
+
+    if ([cleanString length] == 8) {
+        alpha = (rgbValue & 0x000000FF) / 255.0;
+        rgbValue = rgbValue >> 8;
+    }
+
+    CGFloat red = ((rgbValue & 0xFF0000) >> 16) / 255.0;
+    CGFloat green = ((rgbValue & 0x00FF00) >> 8) / 255.0;
+    CGFloat blue = (rgbValue & 0x0000FF) / 255.0;
+
+    return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
 
 @end
