@@ -112,20 +112,22 @@
             ITYPE *immutable = SAFE_OBJ(obj, ITYPE, nil);                      \
             if (immutable) {                                                   \
                 value = immutable.mutableCopy;                                 \
+                DEBUG_LOG(@" copied from " KEY);                               \
                 if (self.mDict != NULL) {                                      \
+                    DEBUG_LOG(@" replaced " KEY);                              \
                     self.mDict[KEY] = value;                                   \
                 }                                                              \
             } else {                                                           \
                 value = (DEFAULT);                                             \
             }                                                                  \
-            DEBUG_LOG(@" got " FMT @" from " KEY, ##__VA_ARGS__);              \
         }                                                                      \
+        DEBUG_LOG(@" got " FMT @" from " KEY, ##__VA_ARGS__);                  \
         return value;                                                          \
     }                                                                          \
     -(ITYPE *)immutable##PROP {                                                \
         NSObject *obj = self.dictionary[KEY];                                  \
         ITYPE *value = SAFE_OBJ(obj, ITYPE, DEFAULT);                          \
-        DEBUG_LOG(@" got " FMT @" from " KEY, ##__VA_ARGS__);                  \
+        DEBUG_LOG(@" got immutable " FMT @" from " KEY, ##__VA_ARGS__);        \
         return value;                                                          \
     }                                                                          \
     -(bool)isMutable##PROP {                                                   \
