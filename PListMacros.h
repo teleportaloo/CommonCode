@@ -32,11 +32,14 @@
 // - valPROPERTY
 // - existsPROPERTY (if property exists)
 // for mutable properties it creates
-// - mutablePROPERTY
-// This is a bool that is true if the property was stored as mutable. if it
-// is false then changes to the property will not be saved back as it returned
-// a mutable copy. This can happen if the dictionary was not loaded with
-// mutable leaves, or came from user activity where it started off as mutable.
+// - isMutablePROPERTY
+// - immutablePROPERTY
+// isMutablePROPERTY is a bool that is true if the property was stored as
+// mutable. If it is false then changes to the property may not be saved back
+// if it returned a mutable copy and the container is immutable. If a nutable
+// PList was created then it will update the leaf to be mutable if it was read
+// as immutable. immutablePROPERTY is used when do the caller doesn't really
+// need it to be mutable so saves the write-back if it was not.
 
 // Typical uses are:
 // PROP_NSString(Location, "@loc", nil);
@@ -109,6 +112,9 @@
             ITYPE *immutable = SAFE_OBJ(obj, ITYPE, nil);                      \
             if (immutable) {                                                   \
                 value = immutable.mutableCopy;                                 \
+                if (self.mDict != NULL) {                                      \
+                    self.mDict[KEY] = value;                                   \
+                }                                                              \
             } else {                                                           \
                 value = (DEFAULT);                                             \
             }                                                                  \
@@ -116,7 +122,13 @@
         }                                                                      \
         return value;                                                          \
     }                                                                          \
-    -(bool)mutable##PROP {                                                     \
+    -(ITYPE *)immutable##PROP {                                                \
+        NSObject *obj = self.dictionary[KEY];                                  \
+        ITYPE *value = SAFE_OBJ(obj, ITYPE, DEFAULT);                          \
+        DEBUG_LOG(@" got " FMT @" from " KEY, ##__VA_ARGS__);                  \
+        return value;                                                          \
+    }                                                                          \
+    -(bool)isMutable##PROP {                                                   \
         NSObject *obj = self.dictionary[KEY];                                  \
         MTYPE *value = SAFE_OBJ(obj, MTYPE, nil);                              \
         DEBUG_LOG(@"PROP_MUTABLE " KEY " %d", value != nil);                   \
