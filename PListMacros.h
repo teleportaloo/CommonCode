@@ -90,6 +90,26 @@
     }                                                                          \
     PROP_EXISTS(PROP, KEY)
 
+#define MPROP_OBJ(PROP, KEY, D, M, I, S, ...)                                  \
+    -(void)setVal##PROP : (M *)value {                                         \
+        ASSERT(self.mDict != NULL)                                             \
+        self.mDict[KEY] = value;                                               \
+        DEBUG_LOG(@" set " S @" to " KEY, ##__VA_ARGS__);                      \
+    }                                                                          \
+    -(M *)val##PROP {                                                          \
+        NSObject *obj = self.dictionary[KEY];                                  \
+        M *value = SAFE_OBJ(obj, M, D);                                        \
+        if (value == nil) {                                                    \
+            I *immutable = SAFE_OBJ(obj, I, D);                                \
+            if (immutable) {                                                   \
+                value = immutable.mutableCopy;                                 \
+            }                                                                  \
+        }                                                                      \
+        DEBUG_LOG(@" got " S @" from " KEY, ##__VA_ARGS__);                    \
+        return value;                                                          \
+    }                                                                          \
+    PROP_EXISTS(PROP, KEY)
+
 #define PROP_NSString(PROP, KEY, D)                                            \
     PROP_OBJ(PROP, KEY, D, NSString, @"PROP_NSString \"%@\"", value)
 
@@ -98,18 +118,18 @@
              (long)(value ? value.count : -1), PROP_NEWL(value.description));
 
 #define PROP_NSMutableArray(PROP, KEY, D)                                      \
-    PROP_OBJ(PROP, KEY, D, NSMutableArray,                                     \
-             @"PROP_NSMutableArray size %ld%@%@",                              \
-             (long)(value ? value.count : -1), PROP_NEWL(value.description));
+    MPROP_OBJ(PROP, KEY, D, NSMutableArray, NSArray,                           \
+              @"PROP_NSMutableArray size %ld%@%@",                             \
+              (long)(value ? value.count : -1), PROP_NEWL(value.description));
 
 #define PROP_NSDictionary(PROP, KEY, D)                                        \
     PROP_OBJ(PROP, KEY, D, NSDictionary, @"PROP_NSDictionary size %ld%@%@",    \
              (long)(value ? value.count : -1), PROP_NEWL(value.description))
 
 #define PROP_NSMutableDictionary(PROP, KEY, D)                                 \
-    PROP_OBJ(PROP, KEY, D, NSMutableDictionary,                                \
-             @"PROP_NSMutableDictionary size %ld%@%@",                         \
-             (long)(value ? value.count : -1), PROP_NEWL(value.description));
+    MPROP_OBJ(PROP, KEY, D, NSMutableDictionary, NSDictionary,                 \
+              @"PROP_NSMutableDictionary size %ld%@%@",                        \
+              (long)(value ? value.count : -1), PROP_NEWL(value.description));
 
 #define PROP_NSData(PROP, KEY, D)                                              \
     PROP_OBJ(PROP, KEY, D, NSData, @"PROP_NSData size %ld%@%@",                \
