@@ -104,7 +104,7 @@ extern void CommonDebugAssert(void);
         }                                                                                          \
     } while (0)
 #define ERROR_LOG(s, ...)                                                                          \
-    do {                                                                                              \
+    do {                                                                                           \
         NSLog(@"<%s:%d> %@", __func__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__]);  \
     } while (0)
 #define WARNING_LOG(s, ...)                                                                        \
