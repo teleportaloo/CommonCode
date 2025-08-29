@@ -71,7 +71,7 @@
 
 #define PROP_NSNumber(PROP, KEY, TYPE, GETTER, DEFAULT)                                            \
     -(void)setVal##PROP : (TYPE)value {                                                            \
-        ASSERT(self.mDict != NULL)                                                                 \
+        ASSERT(self.mDict != NULL);                                                                \
         self.mDict[KEY] = @(value);                                                                \
         DEBUG_LOG(@"set PROP_NSNumber %f to " KEY, (double)value);                                 \
     }                                                                                              \
@@ -87,7 +87,7 @@
 
 #define PROP_OBJ(PROP, KEY, DEFAULT, TYPE, FMT, ...)                                               \
     -(void)setVal##PROP : (TYPE *)value {                                                          \
-        ASSERT(self.mDict != NULL)                                                                 \
+        ASSERT(self.mDict != NULL);                                                                \
         self.mDict[KEY] = value;                                                                   \
         DEBUG_LOG(@" set " FMT @" to " KEY, ##__VA_ARGS__);                                        \
     }                                                                                              \
@@ -101,7 +101,7 @@
 
 #define MPROP_OBJ(PROP, KEY, DEFAULT, MTYPE, ITYPE, FMT, ...)                                      \
     -(void)setVal##PROP : (MTYPE *)value {                                                         \
-        ASSERT(self.mDict != NULL)                                                                 \
+        ASSERT(self.mDict != NULL);                                                                \
         self.mDict[KEY] = value;                                                                   \
         DEBUG_LOG(@" set " FMT @" to " KEY, ##__VA_ARGS__);                                        \
     }                                                                                              \
@@ -152,7 +152,7 @@
 
 #define PROP_bool(PROP, KEY, DEFAULT)                                                              \
     -(void)setVal##PROP : (bool)value {                                                            \
-        ASSERT(self.mDict != NULL)                                                                 \
+        ASSERT(self.mDict != NULL);                                                                \
         self.mDict[KEY] = @(value);                                                                \
         DEBUG_LOG(@"set PROP_bool %d to " KEY, value);                                             \
     }                                                                                              \

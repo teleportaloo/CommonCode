@@ -38,10 +38,12 @@ extern void CommonDebugAssert(void);
 #endif
 
 #define DEBUG_BLOCK(X)                                                                             \
-    if (DEBUG_ON_FOR_FILE) {                                                                       \
-        void (^block)(void) = (X);                                                                 \
-        block();                                                                                   \
-    }
+    do {                                                                                           \
+        if (DEBUG_ON_FOR_FILE) {                                                                   \
+            void (^block)(void) = (X);                                                             \
+            block();                                                                               \
+        }                                                                                          \
+    } while (0)
 #define DEBUG_ON_FOR_FILE ((CommonDebugLogLevel() & DEBUG_LEVEL_FOR_FILE))
 #define DEBUG_AND(X) (DEBUG_ON_FOR_FILE) ? ((X)) : (FALSE)
 
@@ -49,29 +51,37 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_PREFIX_VALS CommonDebugLogStr(DEBUG_LEVEL_FOR_FILE), __func__, __LINE__
 
 #define DEBUG_LOG(s, ...)                                                                          \
-    if (DEBUG_ON_FOR_FILE) {                                                                       \
-        NSLog(DEBUG_LOG_PREFIX @"%@",                                                              \
-              DEBUG_LOG_PREFIX_VALS,                                                               \
-              [NSString stringWithFormat:(s), ##__VA_ARGS__]);                                     \
-    }
+    do {                                                                                           \
+        if (DEBUG_ON_FOR_FILE) {                                                                   \
+            NSLog(DEBUG_LOG_PREFIX @"%@",                                                          \
+                  DEBUG_LOG_PREFIX_VALS,                                                           \
+                  [NSString stringWithFormat:(s), ##__VA_ARGS__]);                                 \
+        }                                                                                          \
+    } while (0)
 #define DEBUG_PRINTF(format, args...)                                                              \
-    if (DEBUG_ON_FOR_FILE) {                                                                       \
-        printf(format, ##args);                                                                    \
+    {                                                                                              \
+        if (DEBUG_ON_FOR_FILE) {                                                                   \
+            printf(format, ##args);                                                                \
+        }                                                                                          \
     }
 #define ASSERT(X)                                                                                  \
-    if (!(X)) {                                                                                    \
-        NSLog(@"ASSERTION Failed: " @ #X);                                                         \
-        CommonDebugAssert();                                                                       \
-        raise(SIGINT);                                                                             \
-    }
+    do {                                                                                           \
+        if (!(X)) {                                                                                \
+            NSLog(@"ASSERTION Failed: " @ #X);                                                     \
+            CommonDebugAssert();                                                                   \
+            raise(SIGINT);                                                                         \
+        }                                                                                          \
+    } while (0)
 #define DEBUG_MODE @" debug"
 
 #define DEBUG_LOG_MAYBE(C, S, ...)                                                                 \
-    if (DEBUG_ON_FOR_FILE && (C)) {                                                                \
-        NSLog(DEBUG_LOG_PREFIX @"%@",                                                              \
-              DEBUG_LOG_PREFIX_VALS,                                                               \
-              [NSString stringWithFormat:(S), ##__VA_ARGS__]);                                     \
-    }
+    do {                                                                                           \
+        if (DEBUG_ON_FOR_FILE && (C)) {                                                            \
+            NSLog(DEBUG_LOG_PREFIX @"%@",                                                          \
+                  DEBUG_LOG_PREFIX_VALS,                                                           \
+                  [NSString stringWithFormat:(S), ##__VA_ARGS__]);                                 \
+        }                                                                                          \
+    } while (0)
 
 #else
 
@@ -88,18 +98,22 @@ extern void CommonDebugAssert(void);
 
 #define DEBUG_HERE() DEBUG_LOG(@"here")
 #define DEBUG_LOG_RAW(s, ...)                                                                      \
-    if (DEBUG_ON_FOR_FILE) {                                                                       \
-        NSLog(s, ##__VA_ARGS__);                                                                   \
-    }
+    do {                                                                                           \
+        if (DEBUG_ON_FOR_FILE) {                                                                   \
+            NSLog(s, ##__VA_ARGS__);                                                               \
+        }                                                                                          \
+    } while (0)
 #define ERROR_LOG(s, ...)                                                                          \
-    NSLog(@"<%s:%d> %@", __func__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__])
+    do {                                                                                              \
+        NSLog(@"<%s:%d> %@", __func__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__]);  \
+    } while (0)
 #define WARNING_LOG(s, ...)                                                                        \
-    {                                                                                              \
+    do {                                                                                           \
         NSLog(@"**** WARNING **** <%s:%d> %@",                                                     \
               __func__,                                                                            \
               __LINE__,                                                                            \
               [NSString stringWithFormat:(s), ##__VA_ARGS__]);                                     \
-    }
+    } while (0)
 
 #define DEBUG_ITEM_PREFIX @"%-20s "
 #define DEBUG_LOG_BOOL(B) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%@", #B, (B) ? @"True" : @"False")
@@ -122,26 +136,30 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_ulong(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%lu", #X, (unsigned long)(X))
 #define DEBUG_LOG_longX(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"0x%lx", #X, (long)(X))
 #define DEBUG_LOG_NSDate(X)                                                                        \
-    {                                                                                              \
+    do {                                                                                           \
         NSDateFormatter *formatter = [NSDateFormatter new];                                        \
         formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];                   \
         [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZ"];                                 \
         DEBUG_LOG(DEBUG_ITEM_PREFIX @"%@", #X, [formatter stringFromDate:(X)]);                    \
-    }
+    } while (0)
 #define DEBUG_LOG_ADDRESS(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%p", #X, (X))
 #define DEBUG_LOG_DebugString(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%s", #X, (X).DebugString())
 #define DEBUG_LOG_UIEdgeInsets(X)                                                                  \
     DEBUG_LOG(DEBUG_ITEM_PREFIX @"%g, %g, %g, %g", #X, (X).top, (X).left, (X).bottom, (X).right)
 #define LOG_NSError(error)                                                                         \
-    if (error) {                                                                                   \
-        ERROR_LOG(@"NSError: %@\n", error.description);                                            \
-    }
+    do {                                                                                           \
+        if (error) {                                                                               \
+            ERROR_LOG(@"NSError: %@\n", error.description);                                        \
+        }                                                                                          \
+    } while (0)
 #define LOG_NSError_info(error, S, ...)                                                            \
-    if (error) {                                                                                   \
-        ERROR_LOG(@"NSError: %@\n %@",                                                             \
-                  error.description,                                                               \
-                  [NSString stringWithFormat:(S), ##__VA_ARGS__]);                                 \
-    }
+    do {                                                                                           \
+        if (error) {                                                                               \
+            ERROR_LOG(@"NSError: %@\n %@",                                                         \
+                      error.description,                                                           \
+                      [NSString stringWithFormat:(S), ##__VA_ARGS__]);                             \
+        }                                                                                          \
+    } while (0)
 #define DEBUG_FUNC() DEBUG_LOG(@"enter")
 #define DEBUG_FUNCEX() DEBUG_LOG(@"exit")
 #define DEBUG_LOG_description(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%@", #X, (X).description)
@@ -152,7 +170,7 @@ extern void CommonDebugAssert(void);
 // For the log level name, we store a cstring into NSData but it will never
 // get around to freeing it.
 #define DEBUG_LOG_LEVEL_1(X)                                                                       \
-    {                                                                                              \
+    do {                                                                                           \
         logLevel |= X;                                                                             \
         const char *str = [[NSString stringWithFormat:@"%-12s", #X] UTF8String];                   \
         debugLevelNames[@(X)] = [NSData dataWithBytes:str length:strlen(str) + 1];                 \
@@ -160,7 +178,7 @@ extern void CommonDebugAssert(void);
         NSLog(@"    Log 0x%04x %s",                                                                \
               (unsigned int)X,                                                                     \
               (const char *)debugLevelNames[@((NSInteger)X)].bytes);                               \
-    }
+    } while (0)
 
 #define DEBUG_LOG_LEVEL_0(X)
 
