@@ -60,135 +60,155 @@
 //  OBJ - object to cast
 //  FMT - format string for debugging
 
-#define SAFE_OBJ(OBJ, TYPE, DEFAULT)                                           \
+#define SAFE_OBJ(OBJ, TYPE, DEFAULT)                                                               \
     ((TYPE *)([(OBJ) isKindOfClass:[TYPE class]] ? (OBJ) : (DEFAULT)))
 
-#define PROP_EXISTS(PROP, KEY)                                                 \
-    -(bool)exists##PROP {                                                      \
-        DEBUG_LOG(@"PROP_EXISTS " KEY " %d", self.dictionary[KEY] != nil);     \
-        return self.dictionary[KEY] != nil;                                    \
+#define PROP_EXISTS(PROP, KEY)                                                                     \
+    -(bool)exists##PROP {                                                                          \
+        DEBUG_LOG(@"PROP_EXISTS " KEY " %d", self.dictionary[KEY] != nil);                         \
+        return self.dictionary[KEY] != nil;                                                        \
     }
 
-#define PROP_NSNumber(PROP, KEY, TYPE, GETTER, DEFAULT)                        \
-    -(void)setVal##PROP : (TYPE)value {                                        \
-        ASSERT(self.mDict != NULL)                                             \
-        self.mDict[KEY] = @(value);                                            \
-        DEBUG_LOG(@"set PROP_NSNumber %f to " KEY, (double)value);             \
-    }                                                                          \
-    -(TYPE)val##PROP {                                                         \
-        NSObject *obj = self.dictionary[KEY];                                  \
-        TYPE value = (TYPE)(SAFE_OBJ(obj, NSNumber, @(DEFAULT)).GETTER);       \
-        DEBUG_LOG(@"got PROP_NSNumber %f from " KEY, (double)value);           \
-        return value;                                                          \
-    }                                                                          \
+#define PROP_NSNumber(PROP, KEY, TYPE, GETTER, DEFAULT)                                            \
+    -(void)setVal##PROP : (TYPE)value {                                                            \
+        ASSERT(self.mDict != NULL)                                                                 \
+        self.mDict[KEY] = @(value);                                                                \
+        DEBUG_LOG(@"set PROP_NSNumber %f to " KEY, (double)value);                                 \
+    }                                                                                              \
+    -(TYPE)val##PROP {                                                                             \
+        NSObject *obj = self.dictionary[KEY];                                                      \
+        TYPE value = (TYPE)(SAFE_OBJ(obj, NSNumber, @(DEFAULT)).GETTER);                           \
+        DEBUG_LOG(@"got PROP_NSNumber %f from " KEY, (double)value);                               \
+        return value;                                                                              \
+    }                                                                                              \
     PROP_EXISTS(PROP, KEY)
 
 #define PROP_NEWL(X) (X) ? @"\n" : @" ", (X)
 
-#define PROP_OBJ(PROP, KEY, DEFAULT, TYPE, FMT, ...)                           \
-    -(void)setVal##PROP : (TYPE *)value {                                      \
-        ASSERT(self.mDict != NULL)                                             \
-        self.mDict[KEY] = value;                                               \
-        DEBUG_LOG(@" set " FMT @" to " KEY, ##__VA_ARGS__);                    \
-    }                                                                          \
-    -(TYPE *)val##PROP {                                                       \
-        NSObject *obj = self.dictionary[KEY];                                  \
-        TYPE *value = SAFE_OBJ(obj, TYPE, DEFAULT);                            \
-        DEBUG_LOG(@" got " FMT @" from " KEY, ##__VA_ARGS__);                  \
-        return value;                                                          \
-    }                                                                          \
+#define PROP_OBJ(PROP, KEY, DEFAULT, TYPE, FMT, ...)                                               \
+    -(void)setVal##PROP : (TYPE *)value {                                                          \
+        ASSERT(self.mDict != NULL)                                                                 \
+        self.mDict[KEY] = value;                                                                   \
+        DEBUG_LOG(@" set " FMT @" to " KEY, ##__VA_ARGS__);                                        \
+    }                                                                                              \
+    -(TYPE *)val##PROP {                                                                           \
+        NSObject *obj = self.dictionary[KEY];                                                      \
+        TYPE *value = SAFE_OBJ(obj, TYPE, DEFAULT);                                                \
+        DEBUG_LOG(@" got " FMT @" from " KEY, ##__VA_ARGS__);                                      \
+        return value;                                                                              \
+    }                                                                                              \
     PROP_EXISTS(PROP, KEY)
 
-#define MPROP_OBJ(PROP, KEY, DEFAULT, MTYPE, ITYPE, FMT, ...)                  \
-    -(void)setVal##PROP : (MTYPE *)value {                                     \
-        ASSERT(self.mDict != NULL)                                             \
-        self.mDict[KEY] = value;                                               \
-        DEBUG_LOG(@" set " FMT @" to " KEY, ##__VA_ARGS__);                    \
-    }                                                                          \
-    -(MTYPE *)val##PROP {                                                      \
-        NSObject *obj = self.dictionary[KEY];                                  \
-        MTYPE *value = SAFE_OBJ(obj, MTYPE, nil);                              \
-        if (value == nil) {                                                    \
-            ITYPE *immutable = SAFE_OBJ(obj, ITYPE, nil);                      \
-            if (immutable) {                                                   \
-                value = immutable.mutableCopy;                                 \
-                DEBUG_LOG(@" copied from " KEY);                               \
-                if (self.mDict != NULL) {                                      \
-                    DEBUG_LOG(@" replaced " KEY);                              \
-                    self.mDict[KEY] = value;                                   \
-                }                                                              \
-            } else {                                                           \
-                value = (DEFAULT);                                             \
-            }                                                                  \
-        }                                                                      \
-        DEBUG_LOG(@" got " FMT @" from " KEY, ##__VA_ARGS__);                  \
-        return value;                                                          \
-    }                                                                          \
-    -(ITYPE *)immutable##PROP {                                                \
-        NSObject *obj = self.dictionary[KEY];                                  \
-        ITYPE *value = SAFE_OBJ(obj, ITYPE, DEFAULT);                          \
-        DEBUG_LOG(@" got immutable " FMT @" from " KEY, ##__VA_ARGS__);        \
-        return value;                                                          \
-    }                                                                          \
-    -(bool)isMutable##PROP {                                                   \
-        NSObject *obj = self.dictionary[KEY];                                  \
-        MTYPE *value = SAFE_OBJ(obj, MTYPE, nil);                              \
-        DEBUG_LOG(@"PROP_MUTABLE " KEY " %d", value != nil);                   \
-        return value != nil;                                                   \
-    }                                                                          \
+#define MPROP_OBJ(PROP, KEY, DEFAULT, MTYPE, ITYPE, FMT, ...)                                      \
+    -(void)setVal##PROP : (MTYPE *)value {                                                         \
+        ASSERT(self.mDict != NULL)                                                                 \
+        self.mDict[KEY] = value;                                                                   \
+        DEBUG_LOG(@" set " FMT @" to " KEY, ##__VA_ARGS__);                                        \
+    }                                                                                              \
+    -(MTYPE *)val##PROP {                                                                          \
+        NSObject *obj = self.dictionary[KEY];                                                      \
+        MTYPE *value = SAFE_OBJ(obj, MTYPE, nil);                                                  \
+        if (value == nil) {                                                                        \
+            ITYPE *immutable = SAFE_OBJ(obj, ITYPE, nil);                                          \
+            if (immutable) {                                                                       \
+                value = immutable.mutableCopy;                                                     \
+                DEBUG_LOG(@" copied from " KEY);                                                   \
+                if (self.mDict != NULL) {                                                          \
+                    DEBUG_LOG(@" replaced " KEY);                                                  \
+                    self.mDict[KEY] = value;                                                       \
+                }                                                                                  \
+            } else {                                                                               \
+                value = (DEFAULT);                                                                 \
+            }                                                                                      \
+        }                                                                                          \
+        DEBUG_LOG(@" got " FMT @" from " KEY, ##__VA_ARGS__);                                      \
+        return value;                                                                              \
+    }                                                                                              \
+    -(ITYPE *)immutable##PROP {                                                                    \
+        NSObject *obj = self.dictionary[KEY];                                                      \
+        ITYPE *value = SAFE_OBJ(obj, ITYPE, DEFAULT);                                              \
+        DEBUG_LOG(@" got immutable " FMT @" from " KEY, ##__VA_ARGS__);                            \
+        return value;                                                                              \
+    }                                                                                              \
+    -(bool)isMutable##PROP {                                                                       \
+        NSObject *obj = self.dictionary[KEY];                                                      \
+        MTYPE *value = SAFE_OBJ(obj, MTYPE, nil);                                                  \
+        DEBUG_LOG(@"PROP_MUTABLE " KEY " %d", value != nil);                                       \
+        return value != nil;                                                                       \
+    }                                                                                              \
     PROP_EXISTS(PROP, KEY);
 
 //------------------------------------------------------------------------------
 // Macros for each type of property
 
-#define PROP_NSInteger(PROP, KEY, DEFAULT)                                     \
+#define PROP_NSInteger(PROP, KEY, DEFAULT)                                                         \
     PROP_NSNumber(PROP, KEY, NSInteger, integerValue, DEFAULT)
 
-#define PROP_CGFloat(PROP, KEY, DEFAULT)                                       \
-    PROP_NSNumber(PROP, KEY, CGFloat, doubleValue, DEFAULT)
+#define PROP_CGFloat(PROP, KEY, DEFAULT) PROP_NSNumber(PROP, KEY, CGFloat, doubleValue, DEFAULT)
 
-#define PROP_double(PROP, KEY, DEFAULT)                                        \
-    PROP_NSNumber(PROP, KEY, double, doubleValue, DEFAULT)
+#define PROP_double(PROP, KEY, DEFAULT) PROP_NSNumber(PROP, KEY, double, doubleValue, DEFAULT)
 
-#define PROP_int(PROP, KEY, DEFAULT)                                           \
-    PROP_NSNumber(PROP, KEY, int, intValue, DEFAULT)
+#define PROP_int(PROP, KEY, DEFAULT) PROP_NSNumber(PROP, KEY, int, intValue, DEFAULT)
 
-#define PROP_bool(PROP, KEY, DEFAULT)                                          \
-    -(void)setVal##PROP : (bool)value {                                        \
-        ASSERT(self.mDict != NULL)                                             \
-        self.mDict[KEY] = @(value);                                            \
-        DEBUG_LOG(@"set PROP_bool %d to " KEY, value);                         \
-    }                                                                          \
-    -(bool)val##PROP {                                                         \
-        bool value = [PlistParams safeBool:self.dictionary[KEY]                \
-                                       def:(DEFAULT)];                         \
-        DEBUG_LOG(@"got PROP_bool %d from " KEY, value);                       \
-        return value;                                                          \
-    }                                                                          \
+#define PROP_bool(PROP, KEY, DEFAULT)                                                              \
+    -(void)setVal##PROP : (bool)value {                                                            \
+        ASSERT(self.mDict != NULL)                                                                 \
+        self.mDict[KEY] = @(value);                                                                \
+        DEBUG_LOG(@"set PROP_bool %d to " KEY, value);                                             \
+    }                                                                                              \
+    -(bool)val##PROP {                                                                             \
+        bool value = [PlistParams safeBool:self.dictionary[KEY] def:(DEFAULT)];                    \
+        DEBUG_LOG(@"got PROP_bool %d from " KEY, value);                                           \
+        return value;                                                                              \
+    }                                                                                              \
     PROP_EXISTS(PROP, KEY)
 
-#define PROP_NSString(PROP, KEY, DEFAULT)                                      \
+#define PROP_NSString(PROP, KEY, DEFAULT)                                                          \
     PROP_OBJ(PROP, KEY, DEFAULT, NSString, @"PROP_NSString \"%@\"", value)
 
-#define PROP_NSArray(PROP, KEY, DEFAULT)                                       \
-    PROP_OBJ(PROP, KEY, DEFAULT, NSArray, @"PROP_NSArray size %ld%@%@",        \
-             (long)(value ? value.count : -1), PROP_NEWL(value.description));
+#define PROP_NSArray(PROP, KEY, DEFAULT)                                                           \
+    PROP_OBJ(PROP,                                                                                 \
+             KEY,                                                                                  \
+             DEFAULT,                                                                              \
+             NSArray,                                                                              \
+             @"PROP_NSArray size %ld%@%@",                                                         \
+             (long)(value ? value.count : -1),                                                     \
+             PROP_NEWL(value.description));
 
-#define PROP_NSMutableArray(PROP, KEY, DEFAULT)                                \
-    MPROP_OBJ(PROP, KEY, DEFAULT, NSMutableArray, NSArray,                     \
-              @"PROP_NSMutableArray size %ld%@%@",                             \
-              (long)(value ? value.count : -1), PROP_NEWL(value.description));
+#define PROP_NSMutableArray(PROP, KEY, DEFAULT)                                                    \
+    MPROP_OBJ(PROP,                                                                                \
+              KEY,                                                                                 \
+              DEFAULT,                                                                             \
+              NSMutableArray,                                                                      \
+              NSArray,                                                                             \
+              @"PROP_NSMutableArray size %ld%@%@",                                                 \
+              (long)(value ? value.count : -1),                                                    \
+              PROP_NEWL(value.description));
 
-#define PROP_NSDictionary(PROP, KEY, DEFAULT)                                  \
-    PROP_OBJ(PROP, KEY, DEFAULT, NSDictionary,                                 \
-             @"PROP_NSDictionary size %ld%@%@",                                \
-             (long)(value ? value.count : -1), PROP_NEWL(value.description))
+#define PROP_NSDictionary(PROP, KEY, DEFAULT)                                                      \
+    PROP_OBJ(PROP,                                                                                 \
+             KEY,                                                                                  \
+             DEFAULT,                                                                              \
+             NSDictionary,                                                                         \
+             @"PROP_NSDictionary size %ld%@%@",                                                    \
+             (long)(value ? value.count : -1),                                                     \
+             PROP_NEWL(value.description))
 
-#define PROP_NSMutableDictionary(PROP, KEY, DEFAULT)                           \
-    MPROP_OBJ(PROP, KEY, DEFAULT, NSMutableDictionary, NSDictionary,           \
-              @"PROP_NSMutableDictionary size %ld%@%@",                        \
-              (long)(value ? value.count : -1), PROP_NEWL(value.description));
+#define PROP_NSMutableDictionary(PROP, KEY, DEFAULT)                                               \
+    MPROP_OBJ(PROP,                                                                                \
+              KEY,                                                                                 \
+              DEFAULT,                                                                             \
+              NSMutableDictionary,                                                                 \
+              NSDictionary,                                                                        \
+              @"PROP_NSMutableDictionary size %ld%@%@",                                            \
+              (long)(value ? value.count : -1),                                                    \
+              PROP_NEWL(value.description));
 
-#define PROP_NSData(PROP, KEY, DEFAULT)                                        \
-    PROP_OBJ(PROP, KEY, DEFAULT, NSData, @"PROP_NSData size %ld%@%@",          \
-             (long)(value ? value.length : -1), PROP_NEWL(value.description));
+#define PROP_NSData(PROP, KEY, DEFAULT)                                                            \
+    PROP_OBJ(PROP,                                                                                 \
+             KEY,                                                                                  \
+             DEFAULT,                                                                              \
+             NSData,                                                                               \
+             @"PROP_NSData size %ld%@%@",                                                          \
+             (long)(value ? value.length : -1),                                                    \
+             PROP_NEWL(value.description));

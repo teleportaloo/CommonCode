@@ -51,18 +51,17 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSMutableString *_Nonnull)commaSeparatedStringFromStringEnumerator:
     (id<NSFastEnumeration> _Nonnull)container;
 
-+ (NSMutableString *_Nonnull)
-    commaSeparatedStringFromEnumerator:(id<NSFastEnumeration> _Nonnull)container
-                              selector:(SEL _Nonnull)selector;
++ (NSMutableString *_Nonnull)commaSeparatedStringFromEnumerator:
+                                 (id<NSFastEnumeration> _Nonnull)container
+                                                       selector:(SEL _Nonnull)selector;
 
-+ (NSMutableString *_Nonnull)
-    textSeparatedStringFromEnumerator:(id<NSFastEnumeration> _Nonnull)container
-                             selector:(SEL _Nonnull)selector
-                            separator:(NSString *_Nonnull)separator;
++ (NSMutableString *_Nonnull)textSeparatedStringFromEnumerator:
+                                 (id<NSFastEnumeration> _Nonnull)container
+                                                      selector:(SEL _Nonnull)selector
+                                                     separator:(NSString *_Nonnull)separator;
 
 - (NSAttributedString *_Nonnull)attributedStringWithAttributes:
     (nullable NSDictionary<NSAttributedStringKey, id> *)attrs;
-
 
 @end
 

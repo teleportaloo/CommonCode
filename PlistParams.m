@@ -26,7 +26,7 @@
 @interface PlistParams ()
 
 // Protected mutable access
-@property(nonatomic, retain) NSMutableDictionary *mDict;
+@property (nonatomic, retain) NSMutableDictionary *mDict;
 
 @end
 

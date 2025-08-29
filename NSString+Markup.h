@@ -83,11 +83,10 @@
 // #Ssymbol insert SF symbol by name e.g. #Sbriefcase.fill
 // #Fimage insert image from bundle by name e.g. #Lapple.png
 
-- (NSMutableAttributedString *_Nonnull)attributedStringFromMarkUpWithFont:
-    (UIFont *_Nullable)font;
-- (NSMutableAttributedString *_Nonnull)
-    attributedStringFromMarkUpWithFont:(UIFont *_Nullable)font
-                             fixedFont:(UIFont *_Nullable)fixedFont;
+- (NSMutableAttributedString *_Nonnull)attributedStringFromMarkUpWithFont:(UIFont *_Nullable)font;
+- (NSMutableAttributedString *_Nonnull)attributedStringFromMarkUpWithFont:(UIFont *_Nullable)font
+                                                                fixedFont:
+                                                                    (UIFont *_Nullable)fixedFont;
 
 // This function adds extra #s to a string so they will not be interpreted as
 // markup
@@ -106,11 +105,9 @@
 - (NSString *_Nonnull)markDownToMarkUp;
 
 // We can add an SF Symbol or image into a string at the same size as the font
-- (NSAttributedString *_Nonnull)
-    attributedStringFromNamedSymbolWithFont:(UIFont *_Nonnull)font
-                                      color:(UIColor *_Nullable)color;
+- (NSAttributedString *_Nonnull)attributedStringFromNamedSymbolWithFont:(UIFont *_Nonnull)font
+                                                                  color:(UIColor *_Nullable)color;
 
-- (NSAttributedString *_Nonnull)attributedStringFromImageWithFont:
-    (UIFont *_Nonnull)font;
+- (NSAttributedString *_Nonnull)attributedStringFromImageWithFont:(UIFont *_Nonnull)font;
 
 @end

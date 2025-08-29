@@ -80,7 +80,7 @@ import StoreKit
 
     public func startTransactionListener(_ parent: UIViewController) {
         DEBUG_LOG(.LogTipJar, "startTransactionListener")
-        
+
         Task { [weak parent, weak self] in
             // Listen for ongoing transaction updates
             for await result in Transaction.updates {

@@ -39,8 +39,8 @@
                   bold:(bool)boldText
                 italic:(bool)italicText {
     UIFontDescriptor *fontDescriptor = font.fontDescriptor;
-    uint32_t traits = (boldText ? UIFontDescriptorTraitBold : 0) |
-                      (italicText ? UIFontDescriptorTraitItalic : 0);
+    uint32_t traits =
+        (boldText ? UIFontDescriptorTraitBold : 0) | (italicText ? UIFontDescriptorTraitItalic : 0);
 
     fontDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:traits];
     font = [UIFont fontWithDescriptor:fontDescriptor size:pointSize];
@@ -121,8 +121,7 @@
 
 #define INDENT_KEY(S, T, B) ((S) + (T) * 0x10000 + ((B) ? 0x1000000 : 0))
 
-    NSParagraphStyle *style =
-        indents[@(INDENT_KEY(size, tabStop, indentToTab))];
+    NSParagraphStyle *style = indents[@(INDENT_KEY(size, tabStop, indentToTab))];
 
     if (style == NULL) {
         @synchronized(indents) {
@@ -130,14 +129,12 @@
                 [NSParagraphStyle defaultParagraphStyle].mutableCopy;
 
             [indentedStyle setTabStops:@[
-                [[NSTextTab alloc]
-                    initWithTextAlignment:NSTextAlignmentLeft
-                                 location:size
-                                  options:[NSDictionary dictionary]],
-                [[NSTextTab alloc]
-                    initWithTextAlignment:NSTextAlignmentLeft
-                                 location:tabStop
-                                  options:[NSDictionary dictionary]]
+                [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft
+                                                location:size
+                                                 options:[NSDictionary dictionary]],
+                [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft
+                                                location:tabStop
+                                                 options:[NSDictionary dictionary]]
             ]];
             indentedStyle.defaultTabInterval = size;
             indentedStyle.firstLineHeadIndent = 0;
@@ -184,8 +181,7 @@
 #define FONT_DELTA_M (2.0)
 #define FONT_DELTA_L (4.0)
 
-- (NSMutableAttributedString *)attributedStringFromMarkUpWithFont:
-    (UIFont *)font {
+- (NSMutableAttributedString *)attributedStringFromMarkUpWithFont:(UIFont *)font {
     return [self attributedStringFromMarkUpWithFont:font fixedFont:NULL];
 }
 
@@ -199,25 +195,21 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
 }
 
 - (NSAttributedString *)attributedStringFromNamedSymbolWithFont:(UIFont *)font
-                                                          color:
-                                                              (UIColor *)color {
+                                                          color:(UIColor *)color {
 #if TARGET_OS_WATCH
     if (@available(watchOS 6.0, *)) {
 #endif
-        UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration
-            configurationWithPointSize:font.pointSize
-                                weight:UIImageSymbolWeightRegular];
-        __block UIImage *symbolImage = [UIImage systemImageNamed:self
-                                               withConfiguration:config];
+        UIImageSymbolConfiguration *config =
+            [UIImageSymbolConfiguration configurationWithPointSize:font.pointSize
+                                                            weight:UIImageSymbolWeightRegular];
+        __block UIImage *symbolImage = [UIImage systemImageNamed:self withConfiguration:config];
 
-        symbolImage = [symbolImage
-            imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        symbolImage = [symbolImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
         // Render it with color using UIGraphicsImageRenderer
         if (color != nil) {
-            symbolImage = [symbolImage
-                imageWithTintColor:color
-                     renderingMode:UIImageRenderingModeAlwaysOriginal];
+            symbolImage = [symbolImage imageWithTintColor:color
+                                            renderingMode:UIImageRenderingModeAlwaysOriginal];
         }
 
         if (!symbolImage) {
@@ -234,11 +226,10 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
 
         // Vertical alignment tweak:
         // Center the image relative to the font’s baseline box
-        CGFloat baselineOffset = (font.capHeight - targetHeight) / 2.0 -
-                                 1.0; // -1.0 empirically centers better
+        CGFloat baselineOffset =
+            (font.capHeight - targetHeight) / 2.0 - 1.0; // -1.0 empirically centers better
 
-        attachment.bounds =
-            CGRectMake(0, baselineOffset, targetWidth, targetHeight);
+        attachment.bounds = CGRectMake(0, baselineOffset, targetWidth, targetHeight);
 
         return [NSAttributedString attributedStringWithAttachment:attachment];
 
@@ -266,21 +257,18 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
 
     // Vertical alignment tweak:
     // Center the image relative to the font’s baseline box
-    CGFloat baselineOffset = (font.capHeight - targetHeight) / 2.0 -
-                             1.0; // -1.0 empirically centers better
+    CGFloat baselineOffset =
+        (font.capHeight - targetHeight) / 2.0 - 1.0; // -1.0 empirically centers better
 
-    attachment.bounds =
-        CGRectMake(0, baselineOffset, targetWidth, targetHeight);
+    attachment.bounds = CGRectMake(0, baselineOffset, targetWidth, targetHeight);
 
     return [NSAttributedString attributedStringWithAttachment:attachment];
 }
 
 // See header for formatting markup
-- (NSMutableAttributedString *)
-    attributedStringFromMarkUpWithFont:(UIFont *)font
-                             fixedFont:(UIFont *)fixedFont {
-    NSMutableAttributedString *string =
-        [[NSMutableAttributedString alloc] init];
+- (NSMutableAttributedString *)attributedStringFromMarkUpWithFont:(UIFont *)font
+                                                        fixedFont:(UIFont *)fixedFont {
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] init];
     NSScanner *escapeScanner = [NSScanner scannerWithString:self];
     CGFloat pointSize = font ? font.pointSize : 10;
     CGFloat indent = pointSize;
@@ -512,16 +500,12 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                         }
 
                         if (currentFont) {
-                            [string
-                                appendAttributedString:
-                                    [symbolName
-                                        attributedStringFromNamedSymbolWithFont:
-                                            currentFont
-                                                                          color:
-                                                                              currentColor]];
+                            [string appendAttributedString:
+                                        [symbolName
+                                            attributedStringFromNamedSymbolWithFont:currentFont
+                                                                              color:currentColor]];
                         } else {
-                            [string
-                                appendAttributedString:@"?".attributedString];
+                            [string appendAttributedString:@"?".attributedString];
                         }
                     }
 
@@ -544,13 +528,10 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                         }
 
                         if (currentFont) {
-                            [string
-                                appendAttributedString:
-                                    [fileName attributedStringFromImageWithFont:
-                                                  currentFont]];
+                            [string appendAttributedString:
+                                        [fileName attributedStringFromImageWithFont:currentFont]];
                         } else {
-                            [string
-                                appendAttributedString:@"?".attributedString];
+                            [string appendAttributedString:@"?".attributedString];
                         }
                     }
 
@@ -565,8 +546,7 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                 case 'X': {
                     if (currentFont != nil && cachedFont == nil) {
                         cachedFont = currentFont;
-                        currentFont = [UIFont fontWithName:@"Menlo-Bold"
-                                                      size:pointSize];
+                        currentFont = [UIFont fontWithName:@"Menlo-Bold" size:pointSize];
                         fontChanged = YES;
                     }
                     break;
@@ -630,8 +610,7 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
             newlineScanner.scanLocation++;
         }
 
-        if (substring != nil &&
-            substring.stringByTrimmingWhitespace.length == 0) {
+        if (substring != nil && substring.stringByTrimmingWhitespace.length == 0) {
             substring = nil;
         }
 
@@ -657,20 +636,19 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
                     [newString appendString:NEWL];
                 }
                 [newString
-                    appendFormat:@"•\t%@ ", [substring substringFromIndex:1]
-                                                .stringByTrimmingWhitespace];
+                    appendFormat:@"•\t%@ ",
+                                 [substring substringFromIndex:1].stringByTrimmingWhitespace];
                 spaced = false;
             } else if (c == '#') {
                 if (!spaced) {
                     [newString appendString:NEWL];
                 }
-                [newString appendFormat:@"#b#)%@#b#(\n",
-                                        [substring substringFromIndex:1]
-                                            .stringByTrimmingWhitespace];
+                [newString
+                    appendFormat:@"#b#)%@#b#(\n",
+                                 [substring substringFromIndex:1].stringByTrimmingWhitespace];
                 spaced = true;
             } else {
-                [newString
-                    appendFormat:@"%@ ", substring.stringByTrimmingWhitespace];
+                [newString appendFormat:@"%@ ", substring.stringByTrimmingWhitespace];
                 spaced = false;
             }
             substring = nil;

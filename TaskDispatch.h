@@ -20,17 +20,16 @@
 // limitations under the License.
 
 #define MainTask(B) dispatch_async(dispatch_get_main_queue(), (B))
-#define WorkerTask(B)                                                          \
-    dispatch_async(                                                            \
-        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), (B))
+#define WorkerTask(B)                                                                              \
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), (B))
 
-#define DoOnce(B)                                                              \
-    {                                                                          \
-        static dispatch_once_t onceToken;                                      \
-        dispatch_once(&onceToken, (B));                                        \
+#define DoOnce(B)                                                                                  \
+    {                                                                                              \
+        static dispatch_once_t onceToken;                                                          \
+        dispatch_once(&onceToken, (B));                                                            \
     }
 
-#define MainTaskDelay(T, B)                                                    \
-    dispatch_after(                                                            \
-        dispatch_time(DISPATCH_TIME_NOW, (int64_t)((T) * NSEC_PER_SEC)),       \
-        dispatch_get_main_queue(), (B))
+#define MainTaskDelay(T, B)                                                                        \
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((T) * NSEC_PER_SEC)),                \
+                   dispatch_get_main_queue(),                                                      \
+                   (B))

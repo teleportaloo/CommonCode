@@ -19,9 +19,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#import "NSString+Convenience.h"
 #import "DebugLogging.h"
+#import "NSString+Convenience.h"
 #import "TaskDispatch.h"
 
 #define DEBUG_LEVEL_FOR_FILE LogMarkup
@@ -53,9 +52,7 @@
 }
 
 - (NSString *)stringByTrimmingWhitespace {
-    return [self
-        stringByTrimmingCharactersInSet:[NSCharacterSet
-                                            whitespaceAndNewlineCharacterSet]];
+    return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 - (NSString *)stringWithTrailingSpaceIfNeeded {
@@ -66,8 +63,7 @@
     return [self stringByAppendingString:@" "];
 }
 
-+ (NSMutableString *)textSeparatedStringFromEnumerator:
-                         (id<NSFastEnumeration>)container
++ (NSMutableString *)textSeparatedStringFromEnumerator:(id<NSFastEnumeration>)container
                                               selector:(SEL)selector
                                              separator:(NSString *)separator {
     NSMutableString *string = [NSMutableString string];
@@ -75,7 +71,7 @@
     static Class stringClass;
 
     DoOnce(^{
-        stringClass = [NSString class];
+      stringClass = [NSString class];
     });
 
     for (NSObject *obj in container) {
@@ -109,26 +105,19 @@
     return string;
 }
 
-+ (NSMutableString *)commaSeparatedStringFromStringEnumerator:
-    (id<NSFastEnumeration>)container;
++ (NSMutableString *)commaSeparatedStringFromStringEnumerator:(id<NSFastEnumeration>)container;
 {
     return [NSString textSeparatedStringFromEnumerator:container
                                               selector:@selector(self)
                                              separator:@","];
 }
 
-+ (NSMutableString *)commaSeparatedStringFromEnumerator:
-                         (id<NSFastEnumeration>)container
++ (NSMutableString *)commaSeparatedStringFromEnumerator:(id<NSFastEnumeration>)container
                                                selector:(SEL)selector;
-{
-    return [NSString textSeparatedStringFromEnumerator:container
-                                              selector:selector
-                                             separator:@","];
-}
+{ return [NSString textSeparatedStringFromEnumerator:container selector:selector separator:@","]; }
 
 - (NSMutableArray<NSString *> *)mutableArrayFromCommaSeparatedString {
-    NSCharacterSet *comma =
-        [NSCharacterSet characterSetWithCharactersInString:@","];
+    NSCharacterSet *comma = [NSCharacterSet characterSetWithCharactersInString:@","];
     NSMutableArray<NSString *> *array = [NSMutableArray array];
     NSScanner *scanner = [NSScanner scannerWithString:self];
     NSString *item;
@@ -144,19 +133,18 @@
 }
 
 - (NSString *)percentEncodeUrl {
-    return [self stringByAddingPercentEncodingWithAllowedCharacters:
-                     NSCharacterSet.URLPathAllowedCharacterSet];
+    return
+        [self stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet
+                                                                     .URLPathAllowedCharacterSet];
 }
 
 - (NSString *)fullyPercentEncodeString {
-    return [self stringByAddingPercentEncodingWithAllowedCharacters:
-                     NSCharacterSet.alphanumericCharacterSet];
+    return [self
+        stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.alphanumericCharacterSet];
 }
 
 - (bool)hasCaseInsensitiveSubstring:(NSString *)search {
-    return
-        [self rangeOfString:search options:NSCaseInsensitiveSearch].location !=
-        NSNotFound;
+    return [self rangeOfString:search options:NSCaseInsensitiveSearch].location != NSNotFound;
 }
 
 - (NSString *)justNumbers {
@@ -187,9 +175,7 @@
 - (NSString *)removeSingleLineBreaks {
     // Replace single line breaks
     NSRegularExpression *regex =
-        [NSRegularExpression regularExpressionWithPattern:@"(?<!\n)\n(?!\n)"
-                                                  options:0
-                                                    error:NULL];
+        [NSRegularExpression regularExpressionWithPattern:@"(?<!\n)\n(?!\n)" options:0 error:NULL];
     return [regex stringByReplacingMatchesInString:self
                                            options:0
                                              range:NSMakeRange(0, self.length)

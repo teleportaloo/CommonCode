@@ -19,14 +19,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#import "UIColor+HTML.h"
 #import "TaskDispatch.h"
+#import "UIColor+HTML.h"
 
 @implementation UIColor (HTML)
 
 + (UIColor *)colorWithHTMLColor:(uint32_t)col {
     static NSCache<NSNumber *, UIColor *> *colorCache;
-    
+
     DoOnce(^{
       colorCache = [NSCache new];
     });
@@ -64,8 +64,7 @@
     }
     // Trim whitespace and newlines, and uppercase the string
     NSMutableString *cleanString = [[hexString
-        stringByTrimmingCharactersInSet:[NSCharacterSet
-                                            whitespaceAndNewlineCharacterSet]]
+        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
         mutableCopy];
     [cleanString setString:[cleanString uppercaseString]];
 

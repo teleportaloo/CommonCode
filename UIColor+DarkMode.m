@@ -22,18 +22,15 @@
 #import "UIColor+DarkMode.h"
 #import "UIColor+HTML.h"
 
-
 @implementation UIColor (DarkMode)
 
 + (bool)darkMode {
 #if TARGET_OS_WATCH
     return false;
 #else
-    return ([UIScreen mainScreen].traitCollection.userInterfaceStyle ==
-            UIUserInterfaceStyleDark);
+    return ([UIScreen mainScreen].traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
 #endif
 }
-
 
 + (UIColor *)modeAwareText {
 #if TARGET_OS_WATCH
