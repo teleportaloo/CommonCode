@@ -19,7 +19,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#define MainTask(B) dispatch_async(dispatch_get_main_queue(), (B))
+#define MainTask(B)                                                                                \
+    do {                                                                                           \
+        dispatch_async(dispatch_get_main_queue(), (B));                                            \
+    } while (0)
+
 #define WorkerTask(B)                                                                              \
     do {                                                                                           \
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), (B));        \
