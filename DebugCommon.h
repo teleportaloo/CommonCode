@@ -29,6 +29,7 @@ extern "C" {
 #import <Foundation/Foundation.h>
 #endif
 
+// These have to be "C" compatible, so no NSString
 extern long CommonDebugLogLevel(void);
 extern const char *CommonDebugLogStr(debugLogLevel level);
 extern void CommonDebugAssert(void);
@@ -176,8 +177,9 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_NSIndexPath(I)                                                                   \
     DEBUG_LOG(@"%s: section %d row %d", #I, (int)((I).section), (int)((I).row));
 
-// For the log level name, we store a cstring into NSData but it will never
-// get around to freeing it.
+// For the log level name, we store a cstring into NSData. We do this as it has to be a cstring to
+// be used in C or C++ code, and I didn't want to convert it at every use. So we convert it once
+// put it in an NSData and get the pointer to it for each log message.
 #define DEBUG_LOG_LEVEL_1(X)                                                                       \
     do {                                                                                           \
         logLevel |= X;                                                                             \
