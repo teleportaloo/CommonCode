@@ -1,6 +1,5 @@
 //
 //  NSString+Markup.h
-//  PDXBusCore
 //
 //  Created by Andrew Wallace on 11/7/15.
 //  Copyright © 2015 Andrew Wallace

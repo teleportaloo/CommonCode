@@ -1,6 +1,5 @@
 //
 //  UIColor+HTML.m
-//  Automata
 //
 //  Created by Andy Wallace on 7/6/25.
 //

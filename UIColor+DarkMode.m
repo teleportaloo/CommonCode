@@ -1,6 +1,5 @@
 //
 //  UIColor+DarkMode.m
-//  Automata
 //
 //  Created by Andy Wallace on 7/7/25.
 //

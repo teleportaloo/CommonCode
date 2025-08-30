@@ -1,6 +1,5 @@
 //
 //  TaskDispatch.h
-//  Trail Map Locator
 //
 //  Created by Andy Wallace on 4/14/25.
 //

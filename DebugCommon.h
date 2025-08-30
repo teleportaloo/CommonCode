@@ -44,6 +44,7 @@ extern void CommonDebugAssert(void);
             block();                                                                               \
         }                                                                                          \
     } while (0)
+
 #define DEBUG_ON_FOR_FILE ((CommonDebugLogLevel() & DEBUG_LEVEL_FOR_FILE))
 #define DEBUG_AND(X) (DEBUG_ON_FOR_FILE) ? ((X)) : (FALSE)
 
@@ -58,12 +59,14 @@ extern void CommonDebugAssert(void);
                   [NSString stringWithFormat:(s), ##__VA_ARGS__]);                                 \
         }                                                                                          \
     } while (0)
+
 #define DEBUG_PRINTF(format, args...)                                                              \
-    {                                                                                              \
+    do {                                                                                           \
         if (DEBUG_ON_FOR_FILE) {                                                                   \
             printf(format, ##args);                                                                \
         }                                                                                          \
-    }
+    } while (0)
+
 #define ASSERT(X)                                                                                  \
     do {                                                                                           \
         if (!(X)) {                                                                                \
@@ -72,6 +75,7 @@ extern void CommonDebugAssert(void);
             raise(SIGINT);                                                                         \
         }                                                                                          \
     } while (0)
+
 #define DEBUG_MODE @" debug"
 
 #define DEBUG_LOG_MAYBE(C, S, ...)                                                                 \
@@ -103,10 +107,12 @@ extern void CommonDebugAssert(void);
             NSLog(s, ##__VA_ARGS__);                                                               \
         }                                                                                          \
     } while (0)
+
 #define ERROR_LOG(s, ...)                                                                          \
     do {                                                                                           \
         NSLog(@"<%s:%d> %@", __func__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__]);  \
     } while (0)
+
 #define WARNING_LOG(s, ...)                                                                        \
     do {                                                                                           \
         NSLog(@"**** WARNING **** <%s:%d> %@",                                                     \
@@ -142,6 +148,7 @@ extern void CommonDebugAssert(void);
         [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZ"];                                 \
         DEBUG_LOG(DEBUG_ITEM_PREFIX @"%@", #X, [formatter stringFromDate:(X)]);                    \
     } while (0)
+
 #define DEBUG_LOG_ADDRESS(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%p", #X, (X))
 #define DEBUG_LOG_DebugString(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%s", #X, (X).DebugString())
 #define DEBUG_LOG_UIEdgeInsets(X)                                                                  \
@@ -152,6 +159,7 @@ extern void CommonDebugAssert(void);
             ERROR_LOG(@"NSError: %@\n", error.description);                                        \
         }                                                                                          \
     } while (0)
+
 #define LOG_NSError_info(error, S, ...)                                                            \
     do {                                                                                           \
         if (error) {                                                                               \
@@ -160,6 +168,7 @@ extern void CommonDebugAssert(void);
                       [NSString stringWithFormat:(S), ##__VA_ARGS__]);                             \
         }                                                                                          \
     } while (0)
+
 #define DEBUG_FUNC() DEBUG_LOG(@"enter")
 #define DEBUG_FUNCEX() DEBUG_LOG(@"exit")
 #define DEBUG_LOG_description(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%@", #X, (X).description)

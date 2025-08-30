@@ -1,6 +1,5 @@
 //
 //  StringHelper.m
-//  PDXBusCore
 //
 //  Created by Andrew Wallace on 11/7/15.
 //  Copyright © 2015 Andrew Wallace
@@ -25,6 +24,7 @@
 #import "DebugLogging.h"
 #import "NSString+Convenience.h"
 #import "NSString+Markup.h"
+#import "TaskDispatch.h"
 #import "UIColor+DarkMode.h"
 #import "UIColor+HTML.h"
 #import <TargetConditionals.h>
@@ -80,12 +80,10 @@
 }
 
 - (NSParagraphStyle *)centerStyle:(bool)center {
-    static dispatch_once_t onceToken;
-
     static NSMutableParagraphStyle *centered;
     static NSMutableParagraphStyle *left;
 
-    dispatch_once(&onceToken, ^{
+    DO_ONCE(^{
       centered = [NSParagraphStyle defaultParagraphStyle].mutableCopy;
       [centered setFirstLineHeadIndent:0];
       [centered setHeadIndent:0];
@@ -111,11 +109,9 @@
         return nil;
     }
 
-    static dispatch_once_t onceToken;
-
     static NSMutableDictionary<NSNumber *, NSParagraphStyle *> *indents;
 
-    dispatch_once(&onceToken, ^{
+    DO_ONCE(^{
       indents = [NSMutableDictionary new];
     });
 
