@@ -109,15 +109,15 @@
         return nil;
     }
 
-    static NSMutableDictionary<NSNumber *, NSParagraphStyle *> *indents;
+    static NSCache<NSNumber *, NSParagraphStyle *> *indents;
 
     DO_ONCE(^{
-      indents = [NSMutableDictionary new];
+      indents = [NSCache new];
     });
 
 #define INDENT_KEY(S, T, B) ((S) + (T) * 0x10000 + ((B) ? 0x1000000 : 0))
 
-    NSParagraphStyle *style = indents[@(INDENT_KEY(size, tabStop, indentToTab))];
+    NSParagraphStyle *style = [indents objectForKey:@(INDENT_KEY(size, tabStop, indentToTab))];
 
     if (style == NULL) {
         @synchronized(indents) {
@@ -138,7 +138,7 @@
             indentedStyle.alignment = NSTextAlignmentLeft;
 
             style = indentedStyle;
-            indents[@(INDENT_KEY(size, tabStop, indentToTab))] = style;
+            [indents setObject:style forKey:@INDENT_KEY(size, tabStop, indentToTab)];
         }
     }
     return style;
