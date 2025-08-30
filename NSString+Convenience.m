@@ -67,12 +67,6 @@
                                              separator:(NSString *)separator {
     NSMutableString *string = [NSMutableString string];
 
-    static Class stringClass;
-
-    DO_ONCE(^{
-      stringClass = [NSString class];
-    });
-
     for (NSObject *obj in container) {
         if ([obj respondsToSelector:selector]) {
             IMP imp = [obj methodForSelector:selector];
@@ -82,7 +76,7 @@
 
             // NSObject *item = [obj performSelector:selector];
             if (item != nil) {
-                if ([item isKindOfClass:stringClass]) {
+                if ([item isKindOfClass:[NSString class]]) {
                     if (string.length > 0) {
                         [string appendString:separator];
                     }
