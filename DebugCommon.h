@@ -173,9 +173,9 @@ extern void CommonDebugAssert(void);
 #define DEBUG_FUNC() DEBUG_LOG(@"enter")
 #define DEBUG_FUNCEX() DEBUG_LOG(@"exit")
 #define DEBUG_LOG_description(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%@", #X, (X).description)
-#define DEBUG_LOG_class(X) DEBUG_LOG(@"%s: %s", #X, object_getClassName(X))
+#define DEBUG_LOG_class(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%s", #X, object_getClassName(X))
 #define DEBUG_LOG_NSIndexPath(I)                                                                   \
-    DEBUG_LOG(@"%s: section %d row %d", #I, (int)((I).section), (int)((I).row));
+    DEBUG_LOG(DEBUG_ITEM_PREFIX @"section %d row %d", #I, (int)((I).section), (int)((I).row));
 
 // For the log level name, we store a cstring into NSData. We do this as it has to be a cstring to
 // be used in C or C++ code, and I didn't want to convert it at every use. So we convert it once
