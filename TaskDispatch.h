@@ -19,23 +19,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#define MainTask(B)                                                                                \
+#define MAIN_TASK(B)                                                                               \
     do {                                                                                           \
         dispatch_async(dispatch_get_main_queue(), (B));                                            \
     } while (0)
 
-#define WorkerTask(B)                                                                              \
+#define WORKER_TASK(B)                                                                             \
     do {                                                                                           \
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), (B));        \
     } while (0)
 
-#define DoOnce(B)                                                                                  \
+#define DO_ONCE(B)                                                                                 \
     do {                                                                                           \
         static dispatch_once_t onceToken;                                                          \
         dispatch_once(&onceToken, (B));                                                            \
     } while (0)
 
-#define MainTaskDelay(T, B)                                                                        \
+#define MAIN_TASK_DELAY(T, B)                                                                      \
     do {                                                                                           \
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((T) * NSEC_PER_SEC)),            \
                        dispatch_get_main_queue(),                                                  \

@@ -70,7 +70,7 @@
 
     static Class stringClass;
 
-    DoOnce(^{
+    DO_ONCE(^{
       stringClass = [NSString class];
     });
 

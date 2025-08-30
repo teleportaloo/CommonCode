@@ -27,7 +27,7 @@
 + (UIColor *)colorWithHTMLColor:(uint32_t)col {
     static NSCache<NSNumber *, UIColor *> *colorCache;
 
-    DoOnce(^{
+    DO_ONCE(^{
       colorCache = [NSCache new];
     });
 

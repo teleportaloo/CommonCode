@@ -192,7 +192,7 @@ extern void CommonDebugAssert(void);
     long CommonDebugLogLevel() {                                                                   \
         static NSInteger logLevel = 0;                                                             \
                                                                                                    \
-        DoOnce(^{                                                                                  \
+        DO_ONCE(^{                                                                                 \
           NSLog(@"Debug Logging Initializing");                                                    \
                                                                                                    \
           debugLevelNames = NSMutableDictionary.dictionary;                                        \
