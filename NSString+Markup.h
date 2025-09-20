@@ -27,14 +27,11 @@
 @class UIImageSymbolConfiguration;
 @class UIImage;
 
-
 // Sometimes a system image may not be supported. The client can provide a block that will
 // check and replace with another if it was not found. By default it will not replace anything
 
 typedef UIImage *_Nullable (^SafeSystemImageBlock)(NSString *_Nonnull name,
                                                    UIImageSymbolConfiguration *_Nullable config);
- 
-
 
 @interface NSString (Markup)
 
@@ -120,7 +117,6 @@ typedef UIImage *_Nullable (^SafeSystemImageBlock)(NSString *_Nonnull name,
 
 - (NSAttributedString *_Nonnull)attributedStringFromImageWithFont:(UIFont *_Nonnull)font;
 
-+ (void)setSystemImageAlternatives:(SafeSystemImageBlock _Nonnull )block;
++ (void)setSystemImageAlternatives:(SafeSystemImageBlock _Nonnull)block;
 
 @end
-

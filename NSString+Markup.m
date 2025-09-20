@@ -190,17 +190,17 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
     return substring;
 }
 
-static SafeSystemImageBlock safeSystemImage = ^UIImage *(NSString *name, UIImageSymbolConfiguration *cfg) {
+static SafeSystemImageBlock safeSystemImage =
+    ^UIImage *(NSString *name, UIImageSymbolConfiguration *cfg) {
 #if TARGET_OS_WATCH
-    if (@available(watchOS 6.0, *)) {
+      if (@available(watchOS 6.0, *)) {
 #endif
-        return [UIImage systemImageNamed:name withConfiguration:cfg];
+          return [UIImage systemImageNamed:name withConfiguration:cfg];
 #if TARGET_OS_WATCH
-    }
-    return nil;
+      }
+      return nil;
 #endif
-   
-};
+    };
 
 + (void)setSystemImageAlternatives:(SafeSystemImageBlock)block {
     safeSystemImage = block;
@@ -276,7 +276,6 @@ static SafeSystemImageBlock safeSystemImage = ^UIImage *(NSString *name, UIImage
 
     return [NSAttributedString attributedStringWithAttachment:attachment];
 }
-
 
 // See header for formatting markup
 - (NSMutableAttributedString *)attributedStringFromMarkUpWithFont:(UIFont *)font
