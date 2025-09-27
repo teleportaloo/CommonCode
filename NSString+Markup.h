@@ -88,7 +88,7 @@ typedef UIImage *_Nullable (^SafeSystemImageBlock)(NSString *_Nonnull name,
 
 // Images and SF symbols
 // #Ssymbol insert SF symbol by name e.g. #Sbriefcase.fill
-// #Fimage insert image from bundle by name e.g. #Lapple.png
+// #Fimage insert image from bundle by name e.g. #Fapple.png
 
 - (NSMutableAttributedString *_Nonnull)attributedStringFromMarkUpWithFont:(UIFont *_Nullable)font;
 - (NSMutableAttributedString *_Nonnull)attributedStringFromMarkUpWithFont:(UIFont *_Nullable)font
