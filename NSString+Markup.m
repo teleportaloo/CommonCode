@@ -120,26 +120,24 @@
     NSParagraphStyle *style = [indents objectForKey:@(INDENT_KEY(size, tabStop, indentToTab))];
 
     if (style == NULL) {
-        @synchronized(indents) {
-            NSMutableParagraphStyle *indentedStyle =
-                [NSParagraphStyle defaultParagraphStyle].mutableCopy;
+        NSMutableParagraphStyle *indentedStyle =
+            [NSParagraphStyle defaultParagraphStyle].mutableCopy;
 
-            [indentedStyle setTabStops:@[
-                [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft
-                                                location:size
-                                                 options:[NSDictionary dictionary]],
-                [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft
-                                                location:tabStop
-                                                 options:[NSDictionary dictionary]]
-            ]];
-            indentedStyle.defaultTabInterval = size;
-            indentedStyle.firstLineHeadIndent = 0;
-            indentedStyle.headIndent = indentToTab ? tabStop : size;
-            indentedStyle.alignment = NSTextAlignmentLeft;
+        [indentedStyle setTabStops:@[
+            [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft
+                                            location:size
+                                             options:[NSDictionary dictionary]],
+            [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft
+                                            location:tabStop
+                                             options:[NSDictionary dictionary]]
+        ]];
+        indentedStyle.defaultTabInterval = size;
+        indentedStyle.firstLineHeadIndent = 0;
+        indentedStyle.headIndent = indentToTab ? tabStop : size;
+        indentedStyle.alignment = NSTextAlignmentLeft;
 
-            style = indentedStyle;
-            [indents setObject:style forKey:@INDENT_KEY(size, tabStop, indentToTab)];
-        }
+        style = indentedStyle;
+        [indents setObject:style forKey:@INDENT_KEY(size, tabStop, indentToTab)];
     }
     return style;
 }
