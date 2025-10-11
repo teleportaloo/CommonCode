@@ -141,7 +141,7 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_double(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%f", #X, (double)(X))
 #define DEBUG_LOG_long(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%ld", #X, (long)(X))
 #define DEBUG_LOG_ulong(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"%lu", #X, (unsigned long)(X))
-#define DEBUG_LOG_longX(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"0x%lx", #X, (long)(X))
+#define DEBUG_LOG_longX(X) DEBUG_LOG(DEBUG_ITEM_PREFIX @"0x%lX", #X, (long)(X))
 #define DEBUG_LOG_NSDate(X)                                                                        \
     do {                                                                                           \
         NSDateFormatter *formatter = [NSDateFormatter new];                                        \
