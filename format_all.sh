@@ -221,7 +221,7 @@ if command -v prettier >/dev/null 2>&1; then
   (
     cd "$REPO_ROOT" || exit 1
     # shellcheck disable=SC2086  # intentional word-splitting for PRETTIER_ARGS
-    prettier --write --loglevel warn $PRETTIER_ARGS "**/*.{js,jsx,ts,tsx,json,html,htm,css,md}"
+    prettier --write --log-level warn $PRETTIER_ARGS "**/*.{js,jsx,ts,tsx,json,html,htm,css,md}"
   )
 else
   echo "Prettier not found; skipping JS/HTML/CSS formatting."
