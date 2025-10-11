@@ -120,26 +120,24 @@
     NSParagraphStyle *style = [indents objectForKey:@(INDENT_KEY(size, tabStop, indentToTab))];
 
     if (style == NULL) {
-        @synchronized(indents) {
-            NSMutableParagraphStyle *indentedStyle =
-                [NSParagraphStyle defaultParagraphStyle].mutableCopy;
+        NSMutableParagraphStyle *indentedStyle =
+            [NSParagraphStyle defaultParagraphStyle].mutableCopy;
 
-            [indentedStyle setTabStops:@[
-                [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft
-                                                location:size
-                                                 options:[NSDictionary dictionary]],
-                [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft
-                                                location:tabStop
-                                                 options:[NSDictionary dictionary]]
-            ]];
-            indentedStyle.defaultTabInterval = size;
-            indentedStyle.firstLineHeadIndent = 0;
-            indentedStyle.headIndent = indentToTab ? tabStop : size;
-            indentedStyle.alignment = NSTextAlignmentLeft;
+        [indentedStyle setTabStops:@[
+            [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft
+                                            location:size
+                                             options:[NSDictionary dictionary]],
+            [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft
+                                            location:tabStop
+                                             options:[NSDictionary dictionary]]
+        ]];
+        indentedStyle.defaultTabInterval = size;
+        indentedStyle.firstLineHeadIndent = 0;
+        indentedStyle.headIndent = indentToTab ? tabStop : size;
+        indentedStyle.alignment = NSTextAlignmentLeft;
 
-            style = indentedStyle;
-            [indents setObject:style forKey:@INDENT_KEY(size, tabStop, indentToTab)];
-        }
+        style = indentedStyle;
+        [indents setObject:style forKey:@INDENT_KEY(size, tabStop, indentToTab)];
     }
     return style;
 }
@@ -190,6 +188,22 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
     return substring;
 }
 
+static SafeSystemImageBlock safeSystemImage =
+    ^UIImage *(NSString *name, UIImageSymbolConfiguration *cfg) {
+#if TARGET_OS_WATCH
+      if (@available(watchOS 6.0, *)) {
+#endif
+          return [UIImage systemImageNamed:name withConfiguration:cfg];
+#if TARGET_OS_WATCH
+      }
+      return nil;
+#endif
+    };
+
++ (void)setSystemImageAlternatives:(SafeSystemImageBlock)block {
+    safeSystemImage = block;
+}
+
 - (NSAttributedString *)attributedStringFromNamedSymbolWithFont:(UIFont *)font
                                                           color:(UIColor *)color {
 #if TARGET_OS_WATCH
@@ -198,7 +212,7 @@ static inline NSString *addToSubstring(NSString *str, NSString *substring) {
         UIImageSymbolConfiguration *config =
             [UIImageSymbolConfiguration configurationWithPointSize:font.pointSize
                                                             weight:UIImageSymbolWeightRegular];
-        __block UIImage *symbolImage = [UIImage systemImageNamed:self withConfiguration:config];
+        __block UIImage *symbolImage = safeSystemImage(self, config);
 
         symbolImage = [symbolImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
