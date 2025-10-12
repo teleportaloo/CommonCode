@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+# This formats Objective-C, C, C++, HTML, JSON, JS, Swift...
+# There are some ignore files:
+# .clang-format-ignore
+# .swift-format-ignore
+# .prettier-ignore-extra
+
 set -euo pipefail
 
 # -------- Locate toolchain --------
