@@ -27,7 +27,7 @@
 extern "C" {
 #else
 #import <Foundation/Foundation.h>
-#endif
+#endif // __cplusplus
 
 // These have to be "C" compatible, so no NSString
 extern long CommonDebugLogLevel(void);
@@ -36,7 +36,7 @@ extern void CommonDebugAssert(void);
 
 #if defined __cplusplus
 };
-#endif
+#endif // __cplusplus
 
 #define DEBUG_BLOCK(X)                                                                             \
     do {                                                                                           \
@@ -99,7 +99,7 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_MAYBE(C, S, ...)
 #define DEBUG_AND(X) (false)
 
-#endif
+#endif // DEBUGLOGGING
 
 #define DEBUG_HERE() DEBUG_LOG(@"here")
 #define DEBUG_LOG_RAW(s, ...)                                                                      \
@@ -219,6 +219,6 @@ extern void CommonDebugAssert(void);
 #define DEBUG_LOG_LEVELS(B)                                                                        \
     void CommonDebugAssert() { NSLog(@"Assertion"); }
 
-#endif
+#endif // DEBUGLOGGING
 
 #endif /* DebugLogging_h */

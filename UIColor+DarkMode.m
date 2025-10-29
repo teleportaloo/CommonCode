@@ -28,7 +28,7 @@
     return false;
 #else
     return ([UIScreen mainScreen].traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-#endif
+#endif // TARGET_OS_WATCH
 }
 
 + (UIColor *)modeAwareText {
@@ -36,7 +36,7 @@
     return [UIColor blackColor];
 #else
     return [UIColor labelColor];
-#endif
+#endif // TARGET_OS_WATCH
 }
 
 + (UIColor *)modeAwareBlue {

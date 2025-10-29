@@ -192,12 +192,12 @@ static SafeSystemImageBlock safeSystemImage =
     ^UIImage *(NSString *name, UIImageSymbolConfiguration *cfg) {
 #if TARGET_OS_WATCH
       if (@available(watchOS 6.0, *)) {
-#endif
+#endif // TARGET_OS_WATCH
           return [UIImage systemImageNamed:name withConfiguration:cfg];
 #if TARGET_OS_WATCH
       }
       return nil;
-#endif
+#endif // TARGET_OS_WATCH
     };
 
 + (void)setSystemImageAlternatives:(SafeSystemImageBlock)block {
@@ -208,7 +208,7 @@ static SafeSystemImageBlock safeSystemImage =
                                                           color:(UIColor *)color {
 #if TARGET_OS_WATCH
     if (@available(watchOS 6.0, *)) {
-#endif
+#endif // TARGET_OS_WATCH
         UIImageSymbolConfiguration *config =
             [UIImageSymbolConfiguration configurationWithPointSize:font.pointSize
                                                             weight:UIImageSymbolWeightRegular];
@@ -247,7 +247,7 @@ static SafeSystemImageBlock safeSystemImage =
     } else {
         return @"?".attributedString;
     }
-#endif
+#endif // TARGET_OS_WATCH
 }
 
 - (NSAttributedString *)attributedStringFromImageWithFont:(UIFont *)font {
