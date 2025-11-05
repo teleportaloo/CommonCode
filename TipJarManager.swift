@@ -18,9 +18,15 @@ import StoreKit
 
 @objc @MainActor class TipJarManager: NSObject {
     @objc static let shared = TipJarManager()
+    private static let tippedKey = "hasTipped"
 
     var productTask: Task<Void, Never>?
     var products: [Product]?
+
+    @objc dynamic var hasTipped: Bool {
+        get { UserDefaults.standard.bool(forKey: Self.tippedKey) }
+        set { UserDefaults.standard.set(newValue, forKey: Self.tippedKey) }
+    }
 
     public override init() {
     }
@@ -36,6 +42,11 @@ import StoreKit
                 DispatchQueue.main.async {
                     self.products = products
                     self.productTask = nil
+                    if self.hasTipped == false, let productIds = products?.map({ $0.id }) {
+                        Task {
+                            await self.checkHistoricTips(productIds)
+                        }
+                    }
                     self.startTransactionListener(parent)
                 }
             }
@@ -52,6 +63,24 @@ import StoreKit
         }
     }
 
+    // Checks if any tip product was previously purchased
+    func checkHistoricTips(_ productIds: [String]) async {
+        // Check current entitlements
+        for await result in Transaction.currentEntitlements {
+            if case .verified(let transaction) = result, productIds.contains(transaction.productID) {
+                self.hasTipped = true
+                return
+            }
+        }
+        // Optionally also check full transaction history
+        for await result in Transaction.all {
+            if case .verified(let transaction) = result, productIds.contains(transaction.productID) {
+                self.hasTipped = true
+                return
+            }
+        }
+    }
+
     // Purchase a product by ID
     func purchaseProduct(_ product: Product) async -> (
         completed: Bool, ok: Bool
@@ -63,6 +92,7 @@ import StoreKit
             case .success(let verification):
                 if case .verified(let transaction) = verification {
                     await transaction.finish()
+                    self.hasTipped = true
                     return (true, true)
                 }
             case .userCancelled:
@@ -92,6 +122,7 @@ import StoreKit
                     }
                     // Mark the transaction as finished
                     await transaction.finish()
+                    self?.hasTipped = true
                 }
             }
         }
@@ -178,3 +209,4 @@ import StoreKit
         parent.present(errorAlert, animated: true, completion: nil)
     }
 }
+
