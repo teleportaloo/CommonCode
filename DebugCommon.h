@@ -221,4 +221,4 @@ extern void CommonDebugAssert(void);
 
 #endif // DEBUGLOGGING
 
-#endif /* DebugLogging_h */
+#endif // !DebugCommon_h
