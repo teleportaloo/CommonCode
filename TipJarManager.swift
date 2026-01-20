@@ -67,14 +67,16 @@ import StoreKit
     func checkHistoricTips(_ productIds: [String]) async {
         // Check current entitlements
         for await result in Transaction.currentEntitlements {
-            if case .verified(let transaction) = result, productIds.contains(transaction.productID) {
+            if case .verified(let transaction) = result, productIds.contains(transaction.productID)
+            {
                 self.hasTipped = true
                 return
             }
         }
         // Optionally also check full transaction history
         for await result in Transaction.all {
-            if case .verified(let transaction) = result, productIds.contains(transaction.productID) {
+            if case .verified(let transaction) = result, productIds.contains(transaction.productID)
+            {
                 self.hasTipped = true
                 return
             }
@@ -209,4 +211,3 @@ import StoreKit
         parent.present(errorAlert, animated: true, completion: nil)
     }
 }
-
